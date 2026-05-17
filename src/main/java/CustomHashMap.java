@@ -49,7 +49,7 @@ public class CustomHashMap<K, V> extends AbstractMap<K, V> {
             buckets[bucketIndex] = new LinkedList<>();
         }
         for (Entry<K, V> entry: buckets[bucketIndex]){
-            if (entry.getKey() == key || entry.getKey().equals(key)){
+            if (Objects.equals(entry.getKey(), key)){
                 entry.setValue(value);
                 return value;
             }
@@ -87,7 +87,7 @@ public class CustomHashMap<K, V> extends AbstractMap<K, V> {
             return null;
         }
         for (Entry<K, V> entry: buckets[bucketIndex]){
-            if (entry.getKey() == key || entry.getKey().equals(key)){
+            if (Objects.equals(entry.getKey(), key)){
                 return entry.getValue();
             }
         }
@@ -101,7 +101,7 @@ public class CustomHashMap<K, V> extends AbstractMap<K, V> {
             return false;
         }
         for (Entry<K, V> entry: buckets[bucketIndex]){
-            if (entry.getKey() == key || entry.getKey().equals(key)){
+            if (Objects.equals(entry.getKey(), key)){
                 return true;
             }
         }
@@ -116,7 +116,7 @@ public class CustomHashMap<K, V> extends AbstractMap<K, V> {
         }
         int entryId = 0;
         for (Entry<K, V> entry: buckets[bucketIndex]){
-            if (entry.getKey() == key || entry.getKey().equals(key)){
+            if (Objects.equals(entry.getKey(), key)){
                 size--;
                 return buckets[bucketIndex].remove(entryId).getValue();
             }
