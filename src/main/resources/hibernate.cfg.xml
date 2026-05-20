@@ -12,16 +12,9 @@
             org.postgresql.Driver
         </property>
 
-        <property name = "hibernate.connection.url">
-            jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+        <property name="hibernate.hbm2ddl.auto">
+            create
         </property>
 
-        <property name = "hibernate.connection.username">
-            ${POSTGRES_USER}
-        </property>
-
-        <property name = "hibernate.connection.password">
-            ${POSTGRES_PW}
-        </property>
     </session-factory>
 </hibernate-configuration>
