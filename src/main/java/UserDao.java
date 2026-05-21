@@ -8,7 +8,7 @@ public interface UserDao {
 
     void save(User user);
 
-    void updateById(Long id, User user);
+    void update(User user);
 
     void deleteById(Long id);
 

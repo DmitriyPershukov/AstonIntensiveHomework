@@ -23,17 +23,9 @@ public class HibernateUserDao implements UserDao {
     }
 
     @Override
-    public void updateById(Long id, User user) {
-        Optional<User> foundUser = findById(id);
-        if(foundUser.isEmpty()){
-            throw new NoSuchElementException(String.format("Пользователь с id %d не найден."));
-        }
-        User userToUpdate = foundUser.get();
-        userToUpdate.setName(user.getName());
-        userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setAge(user.getAge());
+    public void update(User user) {
         SessionFactoryMaker.getFactory().inTransaction(session -> session
-                .merge(userToUpdate));
+                .merge(user));
     }
 
     @Override
