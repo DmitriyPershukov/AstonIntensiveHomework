@@ -48,6 +48,10 @@ public class UserInterface {
             System.out.println("Ввод должен быть числом");
             return;
         }
+        if(!userDao.existsById(id.get())){
+            System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
+            return;
+        }
         userDao.deleteById(id.get());
     }
 
@@ -55,6 +59,7 @@ public class UserInterface {
         User newUser = readNewUserFromInput();
         if(newUser == null){
             System.out.println("Ошибка ввода пользователя.");
+            return;
         }
         userDao.save(newUser);
     }
@@ -64,10 +69,11 @@ public class UserInterface {
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
             System.out.println("Id должен быть числом.");
+            return;
         }
         Optional<User> user = userDao.findById(id.get());
         if(user.isEmpty()){
-            System.out.println(String.format("Пользователь с id %d не найден.", id));
+            System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
             return;
         }
         User unwrappedUser = user.get();
@@ -77,6 +83,7 @@ public class UserInterface {
         User newUser = readNewUserFromInput();
         if(newUser == null){
             System.out.println("Ошибка ввода пользователя.");
+            return;
         }
         unwrappedUser.setName(newUser.getName());
         unwrappedUser.setEmail(newUser.getEmail());
@@ -86,11 +93,11 @@ public class UserInterface {
 
     private User readNewUserFromInput(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите имя пользователя: \n");
+        System.out.println("Введите имя пользователя:");
         String name = scanner.nextLine();
-        System.out.println("Введите почту пользователя: \n");
+        System.out.println("Введите почту пользователя:");
         String email = scanner.nextLine();
-        System.out.println("Введите возраст пользователя: \n");
+        System.out.println("Введите возраст пользователя:");
         Optional<Integer> age = readIntegerFromUser();
         if(age.isEmpty()){
             System.out.println("Возраст должен быть числом");
@@ -108,10 +115,11 @@ public class UserInterface {
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
             System.out.println("Id должен быть числом.");
+            return;
         }
         Optional<User> user = userDao.findById(id.get());
         if(user.isEmpty()){
-            System.out.println(String.format("Пользователь с id %d не найден", id));
+            System.out.println(String.format("Пользователь с id %d не найден", id.get()));
             return;
         }
         displayUsers(List.of(user.get()));
@@ -121,7 +129,7 @@ public class UserInterface {
         System.out.println("id, имя, почта, возраст, дата регистрации");
         users.forEach(user ->
                 System.out.println(String
-                    .format("&d, %s, %s, %d, %s",
+                    .format("%d, %s, %s, %d, %s",
                         user.getId(),
                         user.getName(),
                         user.getEmail(),
@@ -147,8 +155,5 @@ public class UserInterface {
         } catch (NumberFormatException ex){
             return Optional.empty();
         }
-    }
-
-    public static void main(String[] args){
     }
 }
