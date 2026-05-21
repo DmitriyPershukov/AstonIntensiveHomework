@@ -1,8 +1,9 @@
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args){
-        System.out.println("Hello, world.");
+        UserDao userDao = new HibernateUserDao();
+        UserInterface userInterface = new UserInterface();
+        userInterface.interactWithUser(userDao);
     }
 }
