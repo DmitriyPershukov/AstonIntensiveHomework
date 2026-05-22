@@ -39,12 +39,12 @@ public class HibernateUserDao implements UserDao {
 
     @Override
     public void update(User user) {
-        logger.info("Merging user {} to the database.", user);
+        logger.info("Updating user {} in the database.", user);
         try{
             SessionFactoryMaker.getFactory().inTransaction(session -> session
                     .merge(user));
         } catch (ConstraintViolationException ex){
-            logger.warn("Error when trying to merge user in the database. Error: {}", ex.getMessage());
+            logger.warn("Error when trying to update user in the database. Error: {}", ex.getMessage());
             System.out.println(String.format("При попытке изменить пользователя произошла ошибка: %s",
                     ex.getMessage()));
         }
