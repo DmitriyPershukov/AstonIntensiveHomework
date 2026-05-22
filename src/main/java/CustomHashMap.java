@@ -76,7 +76,13 @@ public class CustomHashMap<K, V> extends AbstractMap<K, V> {
         capacity *= 2;
         buckets = new LinkedList[capacity];
         for (Entry<K, V> entry: currentEntries){
-            put(entry.getKey(), entry.getValue());
+            K key = entry.getKey();
+            V value = entry.getValue();
+            int bucketIndex = getBucketIndex(key);
+            if (buckets[bucketIndex] == null){
+                buckets[bucketIndex] = new LinkedList<>();
+            }
+            buckets[bucketIndex].addLast(new AbstractMap.SimpleEntry<>(key, value));
         }
     }
 
