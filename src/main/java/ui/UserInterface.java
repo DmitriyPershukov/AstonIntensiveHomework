@@ -1,5 +1,9 @@
+package ui;
+
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import persistence.UserDao;
 
 import java.util.*;
 
@@ -153,7 +157,7 @@ public class UserInterface {
         try{
             return Optional.of(Integer.valueOf(userInput));
         } catch (NumberFormatException ex){
-            logger.warn("Failed to convert user input to integer. User input={}", userInput);
+            logger.warn("Failed to convert user input to integer. model.User input={}", userInput);
             return Optional.empty();
         }
     }
@@ -164,7 +168,7 @@ public class UserInterface {
         try{
             return Optional.of(Long.valueOf(userInput));
         } catch (NumberFormatException ex){
-            logger.warn("Failed to convert user input to long. User input={}", userInput);
+            logger.warn("Failed to convert user input to long. model.User input={}", userInput);
             return Optional.empty();
         }
     }

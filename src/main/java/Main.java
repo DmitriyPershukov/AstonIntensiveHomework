@@ -1,4 +1,6 @@
-import java.util.Scanner;
+import persistence.HibernateUserDao;
+import persistence.UserDao;
+import ui.UserInterface;
 
 public class Main {
     public static void main(String[] args){
