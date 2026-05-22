@@ -37,8 +37,8 @@ public class User {
     }
 
     public void setAge(int age) {
-        if (age < 0){
-            throw new IllegalArgumentException("Возраст пользователя не может быть отрицательным");
+        if (age < 18){
+            throw new IllegalArgumentException("Возраст пользователя не может быть меньше 18.");
         }
         this.age = age;
     }
