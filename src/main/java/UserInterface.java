@@ -1,7 +1,12 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class UserInterface {
+    final static Logger logger = LoggerFactory.getLogger(UserInterface.class);
     public void interactWithUser(UserDao userDao){
+        logger.info("Starting user console interaction.");
         while(true){
             System.out.println("Введите код операции:");
             System.out.println("1. Получить список всех пользователей.");
@@ -32,6 +37,7 @@ public class UserInterface {
                     handleDeleteUser(userDao);
                     break;
                 case 6:
+                    logger.info("Shutting down.");
                     System.exit(0);
                 default:
                     System.out.println("Неверный код команды.");
@@ -49,6 +55,7 @@ public class UserInterface {
             return;
         }
         if(!userDao.existsById(id.get())){
+            logger.warn("Failed to find user with id={}.", id.get());
             System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
             return;
         }
@@ -73,6 +80,7 @@ public class UserInterface {
         }
         Optional<User> user = userDao.findById(id.get());
         if(user.isEmpty()){
+            logger.warn("Failed to find user with id={}.", id.get());
             System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
             return;
         }
@@ -106,6 +114,7 @@ public class UserInterface {
         try{
             return new User(name, email, age.get());
         } catch (IllegalArgumentException ex){
+            logger.warn("Failed to create new user object based on input");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -119,6 +128,7 @@ public class UserInterface {
         }
         Optional<User> user = userDao.findById(id.get());
         if(user.isEmpty()){
+            logger.warn("Failed to find user with id={}.", id.get());
             System.out.println(String.format("Пользователь с id %d не найден", id.get()));
             return;
         }
@@ -143,6 +153,7 @@ public class UserInterface {
         try{
             return Optional.of(Integer.valueOf(userInput));
         } catch (NumberFormatException ex){
+            logger.warn("Failed to convert user input to integer. User input={}", userInput);
             return Optional.empty();
         }
     }
@@ -153,6 +164,7 @@ public class UserInterface {
         try{
             return Optional.of(Long.valueOf(userInput));
         } catch (NumberFormatException ex){
+            logger.warn("Failed to convert user input to long. User input={}", userInput);
             return Optional.empty();
         }
     }
