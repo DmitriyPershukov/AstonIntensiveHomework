@@ -8,7 +8,7 @@ import persistence.UserDao;
 import java.util.*;
 
 public class UserInterface {
-    final static Logger logger = LoggerFactory.getLogger(UserInterface.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserInterface.class);
     public void interactWithUser(UserDao userDao){
         logger.info("Starting user console interaction.");
         while(true){

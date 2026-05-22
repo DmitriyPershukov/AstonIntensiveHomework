@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HibernateUserDao implements UserDao {
-    final static Logger logger = LoggerFactory.getLogger(HibernateUserDao.class);
+    private final static Logger logger = LoggerFactory.getLogger(HibernateUserDao.class);
     @Override
     public Optional<User> findById(Long id){
         logger.info("Fetching user with id={} from the database.", id);

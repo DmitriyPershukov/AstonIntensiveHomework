@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SessionFactoryMaker {
-    final static Logger logger = LoggerFactory.getLogger(SessionFactoryMaker.class);
+    private final static Logger logger = LoggerFactory.getLogger(SessionFactoryMaker.class);
     private static SessionFactory factory;
     public static SessionFactory getFactory() {
         if (factory == null) {
