@@ -1,5 +1,6 @@
 package ui;
 
+import jakarta.validation.ConstraintViolationException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,12 @@ public class UserInterface {
             System.out.println("Ошибка ввода пользователя.");
             return;
         }
-        userDao.save(newUser);
+        try{
+            userDao.save(newUser);
+        } catch (ConstraintViolationException ex){
+            System.out.println(String.format("При попытке добавить пользователя произошла ошибка: %s",
+                    ex.getMessage()));
+        }
     }
 
     private void handleUpdateUser(UserDao userDao){
@@ -100,7 +106,12 @@ public class UserInterface {
         unwrappedUser.setName(newUser.getName());
         unwrappedUser.setEmail(newUser.getEmail());
         unwrappedUser.setAge(newUser.getAge());
-        userDao.update(unwrappedUser);
+        try{
+            userDao.update(unwrappedUser);
+        } catch (ConstraintViolationException ex){
+            System.out.println(String.format("При попытке изменить пользователя произошла ошибка: %s",
+                    ex.getMessage()));
+        }
     }
 
     private User readNewUserFromInput(){

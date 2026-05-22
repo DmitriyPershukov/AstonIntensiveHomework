@@ -32,8 +32,7 @@ public class HibernateUserDao implements UserDao {
                     .persist(user));
         } catch (ConstraintViolationException ex){
             logger.warn("Error when trying to persist user in the database. Error: {}", ex.getMessage());
-            System.out.println(String.format("При попытке добавить пользователя произошла ошибка: %s",
-                    ex.getMessage()));
+            throw ex;
         }
     }
 
@@ -45,8 +44,7 @@ public class HibernateUserDao implements UserDao {
                     .merge(user));
         } catch (ConstraintViolationException ex){
             logger.warn("Error when trying to update user in the database. Error: {}", ex.getMessage());
-            System.out.println(String.format("При попытке изменить пользователя произошла ошибка: %s",
-                    ex.getMessage()));
+            throw ex;
         }
     }
 
