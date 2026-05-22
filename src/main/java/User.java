@@ -33,7 +33,7 @@ public class User {
     public User(String name, String email, int age) {
         this.name = name;
         this.email = email;
-        this.age = age;
+        setAge(age);
     }
 
     public void setAge(int age) {
