@@ -1,10 +1,7 @@
-import java.sql.SQLOutput;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.hibernate.exception.ConstraintViolationException;
-import org.postgresql.util.PSQLException;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
