@@ -40,7 +40,11 @@ public class User {
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = Order_.CUSTOMER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = Order_.CUSTOMER,
+            cascade = {
+            CascadeType.PERSIST,
+            CascadeType.REMOVE,
+            CascadeType.MERGE})
     @Setter(AccessLevel.NONE)
     List<Order> orders = new ArrayList<>();
 
