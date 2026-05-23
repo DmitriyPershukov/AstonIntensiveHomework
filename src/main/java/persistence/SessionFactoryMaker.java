@@ -24,9 +24,9 @@ public class SessionFactoryMaker {
                     .addAnnotatedClass(Order.class)
                     .buildSessionFactory();
                 logger.info("Starting SessionFactory initialization finished successfully.");
-            } catch (Exception e) {
-                logger.error("Session factory initialization failed with exception {}", e.getMessage());
-                throw new ExceptionInInitializerError(e);
+            } catch (Exception ex) {
+                logger.error("Session factory initialization failed with exception {}", ex.getMessage());
+                throw new ExceptionInInitializerError(ex);
             }
         }
         return factory;
