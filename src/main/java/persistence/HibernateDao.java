@@ -18,14 +18,14 @@ public class HibernateDao<T> implements DataAccessObject<T>{
     }
     @Override
     public Optional<T> findById(Long id){
-        logger.info("Fetching user with id={} from the database.", id);
+        logger.info("Fetching {} with id={} from the database.", entityClass.getSimpleName(), id);
         return Optional.ofNullable(SessionFactoryMaker.getFactory().fromTransaction(session -> session
                 .find(entityClass, id)));
     }
 
     @Override
     public List<T> findAll() {
-        logger.info("Fetching all users from the database.");
+        logger.info("Fetching all {} entities from the database.", entityClass.getSimpleName());
         return SessionFactoryMaker.getFactory().fromTransaction(session -> session
                 .createSelectionQuery(String.format("from %s", entityClass.getSimpleName()), entityClass)
                 .getResultList());
@@ -33,35 +33,39 @@ public class HibernateDao<T> implements DataAccessObject<T>{
 
     @Override
     public void save(T entity) {
-        logger.info("Saving user {} to the database.", entity);
+        logger.info("Saving {} {} to the database.", entityClass.getSimpleName(), entity);
         try{
             SessionFactoryMaker.getFactory().inTransaction(session -> session
                     .persist(entity));
         } catch (ConstraintViolationException ex){
-            logger.warn("Error when trying to persist user in the database. Error: {}", ex.getMessage());
+            logger.warn("Error when trying to persist {} in the database. Error: {}",
+                    entityClass.getSimpleName(), ex.getMessage());
             throw ex;
         }
     }
 
     @Override
     public void update(T entity) {
-        logger.info("Updating user {} in the database.", entity);
+        logger.info("Updating {} {} in the database.", entityClass.getSimpleName(), entity);
         try{
             SessionFactoryMaker.getFactory().inTransaction(session -> session
                     .merge(entity));
         } catch (ConstraintViolationException ex){
-            logger.warn("Error when trying to update user in the database. Error: {}", ex.getMessage());
+            logger.warn("Error when trying to update {} in the database. Error: {}",
+                    entityClass.getSimpleName(), ex.getMessage());
             throw ex;
         }
     }
 
     @Override
     public void deleteById(Long id) {
-        logger.info("Removing user with id={} from the database.", id);
+        logger.info("Removing {} with id={} from the database.", entityClass.getSimpleName(), id);
         Optional<T> user = findById(id);
         if(user.isEmpty()){
-            logger.warn("T removal failed because user with id={} was not found", id);
-            throw new EntityNotFoundException(String.format("T with id %d not found", id));
+            logger.warn("{} removal failed because {} with id={} was not found",
+                    entityClass.getSimpleName(), entityClass.getSimpleName(), id);
+            throw new EntityNotFoundException(String.format("%s with id %d not found",
+                    entityClass.getSimpleName(), id));
         }
         SessionFactoryMaker.getFactory().inTransaction(session -> session
                 .remove(user.get()));
@@ -69,7 +73,7 @@ public class HibernateDao<T> implements DataAccessObject<T>{
 
     @Override
     public boolean existsById(Long id) {
-        logger.info("Checking if user with id={} exists.", id);
+        logger.info("Checking if {} with id={} exists.", entityClass.getSimpleName(), id);
         return findById(id).isPresent();
     }
 }
