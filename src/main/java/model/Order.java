@@ -31,6 +31,7 @@ public class Order {
 
     public Order(User customer){
         this.customer = customer;
+        customer.getOrders().add(this);
     }
 
     @PrePersist

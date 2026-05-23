@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,7 +41,8 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = Order_.CUSTOMER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    List<Order> orders;
+    @Setter(AccessLevel.NONE)
+    List<Order> orders = new ArrayList<>();
 
     @PrePersist
     private void onCreate() {
