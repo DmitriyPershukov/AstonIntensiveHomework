@@ -2,6 +2,8 @@ package persistence;
 
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import model.User;
 import org.slf4j.Logger;
@@ -51,11 +53,13 @@ public class HibernateUserDao implements DataAccessObject<User> {
     @Override
     public void deleteById(Long id) {
         logger.info("Removing user with id={} from the database.", id);
-        String hql = "delete from User where id = :id";
+        Optional<User> user = findById(id);
+        if(user.isEmpty()){
+            logger.warn("User removal failed because user with id={} was not found", id);
+            throw new EntityNotFoundException(String.format("User with id %d not found", id));
+        }
         SessionFactoryMaker.getFactory().inTransaction(session -> session
-                .createQuery(hql)
-                .setParameter("id", id)
-                .executeUpdate());
+                .remove(user.get()));
     }
 
     @Override

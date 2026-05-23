@@ -1,5 +1,6 @@
 package ui;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import model.User;
 import org.slf4j.Logger;
@@ -59,12 +60,11 @@ public class UserInterface {
             System.out.println("Ввод должен быть числом");
             return;
         }
-        if(!userDao.existsById(id.get())){
-            logger.warn("Failed to find user with id={}.", id.get());
+        try{
+            userDao.deleteById(id.get());
+        } catch (EntityNotFoundException ex){
             System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
-            return;
         }
-        userDao.deleteById(id.get());
     }
 
     private void handleCreateUser(DataAccessObject<User> userDao){
