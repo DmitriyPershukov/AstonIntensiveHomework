@@ -7,7 +7,7 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HibernateUserDao implements UserDao {
+public class HibernateUserDao implements DataAccessObject<User> {
     private final static Logger logger = LoggerFactory.getLogger(HibernateUserDao.class);
     @Override
     public Optional<User> findById(Long id){
@@ -20,7 +20,7 @@ public class HibernateUserDao implements UserDao {
     public List<User> findAll() {
         logger.info("Fetching all users from the database.");
         return SessionFactoryMaker.getFactory().fromTransaction(session -> session
-                .createSelectionQuery("from model.User", User.class)
+                .createSelectionQuery("from User", User.class)
                 .getResultList());
     }
 
@@ -51,7 +51,7 @@ public class HibernateUserDao implements UserDao {
     @Override
     public void deleteById(Long id) {
         logger.info("Removing user with id={} from the database.", id);
-        String hql = "delete from model.User where id = :id";
+        String hql = "delete from User where id = :id";
         SessionFactoryMaker.getFactory().inTransaction(session -> session
                 .createQuery(hql)
                 .setParameter("id", id)

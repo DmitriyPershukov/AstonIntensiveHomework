@@ -4,13 +4,13 @@ import jakarta.validation.ConstraintViolationException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import persistence.UserDao;
+import persistence.DataAccessObject;
 
 import java.util.*;
 
 public class UserInterface {
     private final static Logger logger = LoggerFactory.getLogger(UserInterface.class);
-    public void interactWithUser(UserDao userDao){
+    public void interactWithUser(DataAccessObject<User> userDao){
         logger.info("Starting user console interaction.");
         while(true){
             System.out.println("Введите код операции:");
@@ -52,7 +52,7 @@ public class UserInterface {
         }
     }
 
-    private void handleDeleteUser(UserDao userDao){
+    private void handleDeleteUser(DataAccessObject<User> userDao){
         System.out.println("Введите id пользователя которого нужно удалить.");
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
@@ -67,7 +67,7 @@ public class UserInterface {
         userDao.deleteById(id.get());
     }
 
-    private void handleCreateUser(UserDao userDao){
+    private void handleCreateUser(DataAccessObject<User> userDao){
         User newUser = readNewUserFromInput();
         if(newUser == null){
             System.out.println("Ошибка ввода пользователя.");
@@ -81,7 +81,7 @@ public class UserInterface {
         }
     }
 
-    private void handleUpdateUser(UserDao userDao){
+    private void handleUpdateUser(DataAccessObject<User> userDao){
         System.out.println("Введите id пользователя которого нужно изменить.");
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
@@ -134,7 +134,7 @@ public class UserInterface {
             return null;
         }
     }
-    private void handleDisplayUserById(UserDao userDao){
+    private void handleDisplayUserById(DataAccessObject<User> userDao){
         System.out.println("Введите id пользователя");
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){

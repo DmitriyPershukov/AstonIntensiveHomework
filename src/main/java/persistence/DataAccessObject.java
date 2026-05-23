@@ -5,14 +5,14 @@ import model.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDao {
-    Optional<User> findById(Long id);
+public interface DataAccessObject<T> {
+    Optional<T> findById(Long id);
 
-    List<User> findAll();
+    List<T> findAll();
 
-    void save(User user);
+    void save(T entity);
 
-    void update(User user);
+    void update(T entity);
 
     void deleteById(Long id);
 
