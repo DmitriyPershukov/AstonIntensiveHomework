@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter @Setter @NoArgsConstructor
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     @Setter(AccessLevel.NONE)
     private Long id;
 
@@ -36,6 +38,9 @@ public class User {
     @Column(name = "created_at",nullable = false)
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = Order_.CUSTOMER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    List<Order> orders;
 
     @PrePersist
     private void onCreate() {

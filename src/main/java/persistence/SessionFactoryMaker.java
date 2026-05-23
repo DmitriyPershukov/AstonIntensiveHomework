@@ -1,5 +1,6 @@
 package persistence;
 
+import model.Order;
 import model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,6 +21,7 @@ public class SessionFactoryMaker {
                     .setProperty("hibernate.connection.username", System.getenv("POSTGRES_USER"))
                     .setProperty("hibernate.connection.password", System.getenv("POSTGRES_PW"))
                     .addAnnotatedClass(User.class)
+                    .addAnnotatedClass(Order.class)
                     .buildSessionFactory();
                 logger.info("Starting SessionFactory initialization finished successfully.");
             } catch (Exception e) {
