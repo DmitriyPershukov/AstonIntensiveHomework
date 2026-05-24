@@ -1,7 +1,6 @@
 import model.User;
 import persistence.DataAccessObject;
 import persistence.HibernateDao;
-import persistence.HibernateUserDao;
 import ui.UserInterface;
 
 public class Main {
