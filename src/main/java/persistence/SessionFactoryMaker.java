@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class SessionFactoryMaker {
     private final static Logger logger = LoggerFactory.getLogger(SessionFactoryMaker.class);
     private static SessionFactory factory;
-    public static SessionFactory getFactory() {
+    public static synchronized SessionFactory getFactory() {
         if (factory == null) {
             try {
                 logger.info("Starting SessionFactory initialization.");
