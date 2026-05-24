@@ -61,15 +61,16 @@ public class HibernateDao<T> implements DataAccessObject<T>{
     @Override
     public void deleteById(Long id) {
         logger.info("Removing {} with id={} from the database.", entityClass.getSimpleName(), id);
-        Optional<T> user = findById(id);
-        if(user.isEmpty()){
-            logger.warn("{} removal failed because {} with id={} was not found",
-                    entityClass.getSimpleName(), entityClass.getSimpleName(), id);
-            throw new EntityNotFoundException(String.format("%s with id %d not found",
-                    entityClass.getSimpleName(), id));
-        }
-        SessionFactoryMaker.getFactory().inTransaction(session -> session
-                .remove(user.get()));
+        SessionFactoryMaker.getFactory().inTransaction(session -> {
+            T entity = session.find(entityClass, id);
+            if (entity == null){
+                logger.warn("{} removal failed because {} with id={} was not found",
+                        entityClass.getSimpleName(), entityClass.getSimpleName(), id);
+                throw new EntityNotFoundException(String.format("%s with id %d not found",
+                        entityClass.getSimpleName(), id));
+            }
+            session.remove(entity);
+        });
     }
 
     @Override
