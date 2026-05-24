@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class HibernateDao<T> implements DataAccessObject<T>{
@@ -74,6 +75,12 @@ public class HibernateDao<T> implements DataAccessObject<T>{
     @Override
     public boolean existsById(Long id) {
         logger.info("Checking if {} with id={} exists.", entityClass.getSimpleName(), id);
-        return findById(id).isPresent();
+        return SessionFactoryMaker.getFactory().fromTransaction(session -> session
+                .createSelectionQuery(String.format("select count(*) from %s where id = :id",
+                        entityClass.getSimpleName())
+                        , Long.class)
+                .setParameter("id", id)
+                .getResultList()
+                .get(0)) == 1;
     }
 }
