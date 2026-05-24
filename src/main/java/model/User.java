@@ -48,6 +48,9 @@ public class User {
     @Setter(AccessLevel.NONE)
     List<Order> orders = new ArrayList<>();
 
+    @Embedded
+    ShippingInformation shippingInformation;
+
     @PrePersist
     private void onCreate() {
         this.createdAt = LocalDateTime.now();
