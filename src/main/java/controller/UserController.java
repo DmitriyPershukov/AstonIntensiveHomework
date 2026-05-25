@@ -1,4 +1,4 @@
-package ui;
+package controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -6,11 +6,20 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.DataAccessObject;
+import persistence.HibernateDao;
+import service.UserService;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
-public class UserInterface {
-    private final static Logger logger = LoggerFactory.getLogger(UserInterface.class);
+public class UserController {
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
+    private UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     public void interactWithUser(DataAccessObject<User> userDao){
         logger.info("Starting user console interaction.");
         while(true){
@@ -28,19 +37,19 @@ public class UserInterface {
             }
             switch(actionCode.get()){
                 case 1:
-                    displayUsers(userDao.findAll());
+                    displayAllUsers();
                     break;
                 case 2:
-                    handleDisplayUserById(userDao);
+                    handleDisplayUserById();
                     break;
                 case 3:
-                    handleCreateUser(userDao);
+                    handleCreateUser();
                     break;
                 case 4:
-                    handleUpdateUser(userDao);
+                    handleUpdateUser();
                     break;
                 case 5:
-                    handleDeleteUser(userDao);
+                    handleDeleteUser();
                     break;
                 case 6:
                     logger.info("Shutting down.");
@@ -53,7 +62,16 @@ public class UserInterface {
         }
     }
 
-    private void handleDeleteUser(DataAccessObject<User> userDao){
+    private void displayAllUsers(){
+        List<User> users = userService.getAllUsers();
+        if(users.isEmpty()){
+            System.out.println("Список пользователей пуст");
+        } else {
+            displayUsers(users);
+        }
+    }
+
+    private void handleDeleteUser(){
         System.out.println("Введите id пользователя которого нужно удалить.");
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
@@ -61,53 +79,50 @@ public class UserInterface {
             return;
         }
         try{
-            userDao.deleteById(id.get());
+            userService.deleteUser(id.get());
+            System.out.println(String.format("Пользователь с id %d успешно удален.", id.get()));
         } catch (EntityNotFoundException ex){
             System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
         }
     }
 
-    private void handleCreateUser(DataAccessObject<User> userDao){
+    private void handleCreateUser(){
         User newUser = readNewUserFromInput();
         if(newUser == null){
             System.out.println("Ошибка ввода пользователя.");
             return;
         }
         try{
-            userDao.save(newUser);
+            userService.createUser(newUser);
+            System.out.println("Пользователь успешно сохранен");
         } catch (ConstraintViolationException ex){
-            System.out.println(String.format("При попытке добавить пользователя произошла ошибка: %s",
-                    ex.getMessage()));
+            String.format("При попытке добавить пользователя произошла ошибка: %s",
+                    ex.getMessage());
         }
     }
 
-    private void handleUpdateUser(DataAccessObject<User> userDao){
+    private void handleUpdateUser(){
         System.out.println("Введите id пользователя которого нужно изменить.");
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
             System.out.println("Id должен быть числом.");
             return;
         }
-        Optional<User> user = userDao.findById(id.get());
-        if(user.isEmpty()){
-            logger.warn("Failed to find user with id={}.", id.get());
+        if(!userService.exists(id.get())){
             System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
             return;
         }
-        User unwrappedUser = user.get();
-        System.out.println("Текущее состояние пользователя");
-        displayUsers(List.of(unwrappedUser));
         System.out.println("Введите новые значения для имени, почты и возраста через запятую.");
         User newUser = readNewUserFromInput();
         if(newUser == null){
             System.out.println("Ошибка ввода пользователя.");
             return;
         }
-        unwrappedUser.setName(newUser.getName());
-        unwrappedUser.setEmail(newUser.getEmail());
-        unwrappedUser.setAge(newUser.getAge());
-        try{
-            userDao.update(unwrappedUser);
+        try {
+            userService.updateUser(id.get(), newUser);
+            String.format("Пользователь с id %d успешно обновлен.", id.get());
+        } catch (EntityNotFoundException ex){
+            System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
         } catch (ConstraintViolationException ex){
             System.out.println(String.format("При попытке изменить пользователя произошла ошибка: %s",
                     ex.getMessage()));
@@ -134,23 +149,26 @@ public class UserInterface {
             return null;
         }
     }
-    private void handleDisplayUserById(DataAccessObject<User> userDao){
+    private void handleDisplayUserById(){
         System.out.println("Введите id пользователя");
         Optional<Long> id = readLongFromUser();
         if(id.isEmpty()){
             System.out.println("Id должен быть числом.");
             return;
         }
-        Optional<User> user = userDao.findById(id.get());
-        if(user.isEmpty()){
-            logger.warn("Failed to find user with id={}.", id.get());
+        try{
+            User user = userService.getUserById(id.get());
+            displayUsers(List.of(user));
+        } catch (EntityNotFoundException ex){
             System.out.println(String.format("Пользователь с id %d не найден", id.get()));
-            return;
         }
-        displayUsers(List.of(user.get()));
     }
 
     private void displayUsers(List<User> users){
+        if(users.isEmpty()){
+            System.out.println("В системе нет записей о пользователях");
+            return;
+        }
         System.out.println("id, имя, почта, возраст, дата регистрации");
         users.forEach(user ->
                 System.out.println(String
