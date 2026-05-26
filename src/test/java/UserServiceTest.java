@@ -5,11 +5,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 import persistence.HibernateDao;
-import ui.UserInterface;
 
 import java.io.*;
 
-public class UserInterfaceTest {
+public class UserServiceTest {
 
     @Mock
     private HibernateDao<User> userDao;
