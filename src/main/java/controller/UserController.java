@@ -6,10 +6,8 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import persistence.DataAccessObject;
-import persistence.HibernateDao;
 import service.UserService;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class UserController {
