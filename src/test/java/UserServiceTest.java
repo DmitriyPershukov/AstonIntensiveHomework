@@ -17,32 +17,25 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class UserServiceTest {
-
     @Mock
     private HibernateDao<User> userDao;
     private UserService userService;
     private MockitoSession mockitoSession;
-    private PrintStream standardOut = System.out;
-    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    private InputStream standartIn = System.in;
     @BeforeEach
     void setUp(){
         mockitoSession = Mockito.mockitoSession()
                         .initMocks(this)
                         .startMocking();
-        System.setOut(new PrintStream(outputStream));
         userService = new UserService(userDao);
     }
     @AfterEach
     void tearDown(){
         mockitoSession.finishMocking();
-        System.setOut(standardOut);
-        System.setIn(standartIn);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {1L})
-    void testDeleteUser(Long id){
+    @Test
+    void testDeleteUser(){
+        Long id = 1L;
         userService.deleteUser(id);
         Mockito.verify(userDao).deleteById(Mockito.eq(id));
     }
@@ -94,9 +87,9 @@ public class UserServiceTest {
         Assertions.assertEquals(user, userService.getUserById(id));
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {1L})
-    void testGetUserByIdThrowsExceptionWhenOldUserNotFound(Long id){
+    @Test
+    void testGetUserByIdThrowsExceptionWhenOldUserNotFound(){
+        Long id = 1L;
         Mockito.when(userDao.findById(Mockito.eq(id))).thenReturn(Optional.empty());
         Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getUserById(id));
     }
@@ -109,10 +102,14 @@ public class UserServiceTest {
     }
 
     @Test
-    void testExists(){
-        Mockito.when(userDao.existsById(Mockito.any())).thenReturn(false);
+    void testExistsReturnsTrueIfEntityFound(){
         Mockito.when(userDao.existsById(Mockito.eq(1L))).thenReturn(true);
         Assertions.assertTrue(userService.exists(1L));
-        Assertions.assertFalse(userService.exists(2L));
+    }
+
+    @Test
+    void testExistsReturnsFalseIfEntityNotFound(){
+        Mockito.when(userDao.existsById(Mockito.eq(1L))).thenReturn(false);
+        Assertions.assertFalse(userService.exists(1L));
     }
 }
