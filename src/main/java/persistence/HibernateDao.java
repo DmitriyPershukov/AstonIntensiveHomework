@@ -1,12 +1,10 @@
 package persistence;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class HibernateDao<T> implements DataAccessObject<T>{
@@ -38,7 +36,8 @@ public class HibernateDao<T> implements DataAccessObject<T>{
         try{
             SessionFactoryMaker.getFactory().inTransaction(session -> session
                     .persist(entity));
-        } catch (ConstraintViolationException ex){
+        } catch (org.hibernate.exception.ConstraintViolationException
+                 | jakarta.validation.ConstraintViolationException ex){
             logger.warn("Error when trying to persist {} in the database. Error: {}",
                     entityClass.getSimpleName(), ex.getMessage());
             throw ex;
@@ -51,7 +50,8 @@ public class HibernateDao<T> implements DataAccessObject<T>{
         try{
             SessionFactoryMaker.getFactory().inTransaction(session -> session
                     .merge(entity));
-        } catch (ConstraintViolationException ex){
+        } catch (org.hibernate.exception.ConstraintViolationException
+                 | jakarta.validation.ConstraintViolationException ex){
             logger.warn("Error when trying to update {} in the database. Error: {}",
                     entityClass.getSimpleName(), ex.getMessage());
             throw ex;
