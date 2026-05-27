@@ -2,17 +2,17 @@ package model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "users")
 public class User {
     @Id
@@ -24,16 +24,19 @@ public class User {
     @Column(unique = true, nullable = false)
     @Size(min = 4, max = 20)
     @NotBlank
+    @EqualsAndHashCode.Include
     private String name;
 
     @Column(unique = true, nullable = false)
     @Size(min = 4, max = 100)
     @NotBlank
     @Email
+    @EqualsAndHashCode.Include
     private String email;
 
     @Column(nullable = false)
     @Min(value = 18)
+    @EqualsAndHashCode.Include
     private int age;
 
     @Column(name = "created_at",nullable = false)
