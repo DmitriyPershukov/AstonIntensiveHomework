@@ -4,14 +4,12 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 import persistence.HibernateDao;
 import service.UserService;
 
-import java.io.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -21,6 +19,7 @@ public class UserServiceTest {
     private HibernateDao<User> userDao;
     private UserService userService;
     private MockitoSession mockitoSession;
+
     @BeforeEach
     void setUp(){
         mockitoSession = Mockito.mockitoSession()
@@ -28,6 +27,7 @@ public class UserServiceTest {
                         .startMocking();
         userService = new UserService(userDao);
     }
+
     @AfterEach
     void tearDown(){
         mockitoSession.finishMocking();
@@ -48,11 +48,9 @@ public class UserServiceTest {
     }
 
     static Stream<User> supplyUsers(){
-        User user1 = new User("Martha", "martha@gmail.com", 35);
-        User user2 = new User("John", "john@gmail.com", 44);
         return Stream.of(
-            user1,
-            user2
+            new User("Martha", "martha@gmail.com", 35),
+            new User("John", "john@gmail.com", 44)
         );
     }
 

@@ -1,6 +1,9 @@
 import jakarta.persistence.EntityNotFoundException;
 import model.User;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import persistence.DataAccessObject;
@@ -9,6 +12,7 @@ import persistence.SessionFactoryMaker;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class HibernateDaoTest {
     public static final String POSTGRES_IMAGE = "postgres:18";
@@ -39,7 +43,7 @@ public class HibernateDaoTest {
     void testFindById(){
         User user = new User("John", "john@gmail.com", 35);
         SessionFactoryMaker.getFactory().inTransaction(session -> session.persist(user));
-        Optional<User> result = userDao.findById(1L);
+        Optional<User> result = userDao.findById(user.getId());
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(user, result.get());
     }
@@ -72,31 +76,33 @@ public class HibernateDaoTest {
         User user = new User("John", "john@gmail.com", 35);
         userDao.save(user);
         User foundUser = SessionFactoryMaker.getFactory().fromTransaction(session ->
-                session.find(User.class, 1L));
+                session.find(User.class, user.getId()));
         Assertions.assertNotNull(foundUser);
         Assertions.assertEquals(user, foundUser);
     }
 
-    @Test
-    void testSaveThrowsConstraintException(){
+    @ParameterizedTest
+    @MethodSource("supplyExceptionUserPairs")
+    void testSaveThrowsConstraintException(Class<Throwable> expectedException, User newUser){
         User user = new User("John", "john@gmail.com", 35);
         SessionFactoryMaker.getFactory().inTransaction(session ->
                 session.persist(user));
-        User userWithDuplicateName = new User("John", "george@gmail.com", 35);
-        User userWithDuplicateEmail = new User("Chris", "john@gmail.com", 35);
-        User userWithShortName = new User("A", "a@gmail.com", 35);
-        User userWithWrongEmailFormat = new User("George", "George", 35);
-        User userWithWrongAge = new User("Mike", "mike@gmail.com", -1);
-        Assertions.assertThrows(org.hibernate.exception.ConstraintViolationException.class,
-                () -> userDao.save(userWithDuplicateName));
-        Assertions.assertThrows(org.hibernate.exception.ConstraintViolationException.class,
-                () -> userDao.save(userWithDuplicateEmail));
-        Assertions.assertThrows(jakarta.validation.ConstraintViolationException.class,
-                () -> userDao.save(userWithShortName));
-        Assertions.assertThrows(jakarta.validation.ConstraintViolationException.class,
-                () -> userDao.save(userWithWrongEmailFormat));
-        Assertions.assertThrows(jakarta.validation.ConstraintViolationException.class,
-                () -> userDao.save(userWithWrongAge));
+        Assertions.assertThrows(expectedException, () -> userDao.save(newUser));
+    }
+
+    private static Stream<Arguments> supplyExceptionUserPairs(){
+        return Stream.of(
+                Arguments.of(org.hibernate.exception.ConstraintViolationException.class,
+                        new User("John", "george@gmail.com", 35)),
+                Arguments.of(org.hibernate.exception.ConstraintViolationException.class,
+                        new User("Chris", "john@gmail.com", 35)),
+                Arguments.of(jakarta.validation.ConstraintViolationException.class,
+                        new User("A", "a@gmail.com", 35)),
+                Arguments.of(jakarta.validation.ConstraintViolationException.class,
+                        new User("George", "George", 35)),
+                Arguments.of(jakarta.validation.ConstraintViolationException.class,
+                        new User("Mike", "mike@gmail.com", -1))
+        );
     }
 
     @Test
@@ -106,45 +112,26 @@ public class HibernateDaoTest {
         user.setName("George");
         userDao.update(user);
         User foundUser = SessionFactoryMaker.getFactory().fromTransaction(session ->
-                session.find(User.class, 1L));
+                session.find(User.class, user.getId()));
         Assertions.assertNotNull(foundUser);
         Assertions.assertEquals("George", foundUser.getName());
     }
 
-    @Test
-    void testUpdateThrowsConstraintException(){
-        User user1 = new User("John", "john@gmail.com", 35);
-        User user2 = new User("Mary", "mary@gmail.com", 35);
-        SessionFactoryMaker.getFactory().inTransaction(session ->
-                List.of(user1, user2).forEach(user -> session.persist(user)));
-        user2.setName("John");
-        Assertions.assertThrows(org.hibernate.exception.ConstraintViolationException.class,
-                () -> userDao.update(user2));
-        user2.setName("Mary");
-        user2.setEmail("john@gmail.com");
-        Assertions.assertThrows(org.hibernate.exception.ConstraintViolationException.class,
-                () -> userDao.update(user2));
-        user2.setEmail("mary@gmail.com");
-        user2.setName("A");
-        Assertions.assertThrows(jakarta.validation.ConstraintViolationException.class,
-                () -> userDao.update(user2));
-        user2.setName("Mary");
-        user2.setEmail("Mary");
-        Assertions.assertThrows(jakarta.validation.ConstraintViolationException.class,
-                () -> userDao.update(user2));
-        user2.setEmail("mary@gmail.com");
-        user2.setAge(-1);
-        Assertions.assertThrows(jakarta.validation.ConstraintViolationException.class,
-                () -> userDao.update(user2));
+    @ParameterizedTest
+    @MethodSource("supplyExceptionUserPairs")
+    void testUpdateThrowsConstraintException(Class<Throwable> expectedException, User newUser){
+        User user = new User("John", "john@gmail.com", 35);
+        SessionFactoryMaker.getFactory().inTransaction(session -> session.persist(user));
+        Assertions.assertThrows(expectedException, () -> userDao.update(newUser));
     }
 
     @Test
     void testDeleteById(){
         User user = new User("John", "john@gmail.com", 35);
         SessionFactoryMaker.getFactory().inTransaction(session -> session.persist(user));
-        userDao.deleteById(1L);
+        userDao.deleteById(user.getId());
         Assertions.assertNull(SessionFactoryMaker.getFactory().fromTransaction(session ->
-                session.find(User.class, 1L)));
+                session.find(User.class, user.getId())));
     }
 
     @Test
@@ -157,7 +144,7 @@ public class HibernateDaoTest {
     void testExistsByIdReturnsTrueIfEntityExists(){
         User user = new User("John", "john@gmail.com", 35);
         SessionFactoryMaker.getFactory().inTransaction(session -> session.persist(user));
-        Assertions.assertTrue(userDao.existsById(1L));
+        Assertions.assertTrue(userDao.existsById(user.getId()));
     }
 
     @Test
