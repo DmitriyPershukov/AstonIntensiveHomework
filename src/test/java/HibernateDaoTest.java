@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import persistence.DataAccessObject;
 import persistence.HibernateDao;
 import persistence.SessionFactoryMaker;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@Testcontainers
 public class HibernateDaoTest {
     public static final String POSTGRES_IMAGE = "postgres:18";
     @Container
