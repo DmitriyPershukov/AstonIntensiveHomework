@@ -1,3 +1,5 @@
+import jakarta.persistence.EntityResult;
+import jakarta.persistence.SqlResultSetMapping;
 import model.*;
 import persistence.SessionFactoryMaker;
 
@@ -5,7 +7,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main {
+
     public static void main(String[] args){
         SessionFactoryMaker.getFactory().inTransaction(session -> {
             Admin admin = new Admin("George", "george@gmail.com",
@@ -26,10 +30,14 @@ public class Main {
             session.persist(customer2);
         });
         SessionFactoryMaker.getFactory().inTransaction(session -> {
-            List<User> users = session.createSelectionQuery("from User", User.class).getResultList();
-            System.out.println(users.get(0) instanceof Admin); //prints true
-            System.out.println(users.get(1) instanceof Customer); //prints true
-            System.out.println(users.get(2) instanceof Customer); //prints true
+            List<User> users = session.createNativeQuery(
+                    "select * from users\n" +
+                            "natural full join customers\n" +
+                            "natural full join admins", User.class).list();
+            for(User user: users){
+                System.out.println(user.getName() + ": " +user.getClass().getSimpleName());
+            }
+
         });
     }
 }

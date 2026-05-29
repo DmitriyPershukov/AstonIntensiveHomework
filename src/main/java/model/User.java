@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(discriminatorType=DiscriminatorType.STRING, name="user_type")
 @Getter
 @Setter
 @NoArgsConstructor

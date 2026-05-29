@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name="admins")
+@DiscriminatorValue("Admin")
 @NoArgsConstructor
 @Getter
 @ToString(callSuper = true)

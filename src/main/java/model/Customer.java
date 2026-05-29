@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name="customers")
+@DiscriminatorValue("Customer")
 @Getter
 @NoArgsConstructor
 @ToString(callSuper = true)
