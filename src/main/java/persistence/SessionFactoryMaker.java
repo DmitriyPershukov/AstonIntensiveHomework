@@ -1,8 +1,6 @@
 package persistence;
 
-import model.Order;
-import model.Product;
-import model.User;
+import model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -24,6 +22,8 @@ public class SessionFactoryMaker {
                     .addAnnotatedClass(User.class)
                     .addAnnotatedClass(Order.class)
                     .addAnnotatedClass(Product.class)
+                    .addAnnotatedClass(Customer.class)
+                    .addAnnotatedClass(Admin.class)
                     .buildSessionFactory();
                 logger.info("Starting SessionFactory initialization finished successfully.");
             } catch (Exception ex) {
