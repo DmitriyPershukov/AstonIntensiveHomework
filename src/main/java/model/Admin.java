@@ -1,10 +1,9 @@
 package model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,6 +12,10 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 public class Admin extends User{
+    @Column(name = "permissions_changed_at")
+    @Setter
+    private LocalDateTime permissionsChangedAt;
+
     @ElementCollection(targetClass = Permission.class)
     @CollectionTable(name = "admin_permissions", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "permission")
