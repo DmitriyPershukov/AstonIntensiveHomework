@@ -30,12 +30,12 @@ public class Order {
 
     @ManyToOne(fetch=LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id", nullable = false)
-    private User customer;
+    private Customer customer;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Product> products = new ArrayList<>();
 
-    public Order(User customer){
+    public Order(Customer customer){
         this.customer = customer;
         customer.getOrders().add(this);
     }
