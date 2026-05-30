@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 public class HibernateDaoTest {
     public static final String POSTGRES_IMAGE = "postgres:18";
     @Container
-    private static PostgreSQLContainer dbContainer =
-            new PostgreSQLContainer(POSTGRES_IMAGE)
+    private static PostgreSQLContainer<?> dbContainer =
+            new PostgreSQLContainer<>(POSTGRES_IMAGE)
                     .withDatabaseName("test_db")
                     .withUsername("test_user")
                     .withPassword("test_pw");
@@ -28,7 +28,6 @@ public class HibernateDaoTest {
 
     @BeforeAll
     static void setUp(){
-        dbContainer.start();
         SessionFactoryMaker.setUrl(dbContainer.getJdbcUrl());
         SessionFactoryMaker.setUsername(dbContainer.getUsername());
         SessionFactoryMaker.setPassword(dbContainer.getPassword());
