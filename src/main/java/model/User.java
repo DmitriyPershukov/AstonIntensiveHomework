@@ -1,8 +1,24 @@
 package model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Embedded;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AccessLevel;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

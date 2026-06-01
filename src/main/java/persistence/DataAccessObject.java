@@ -1,7 +1,5 @@
 package persistence;
 
-import model.User;
-
 import java.util.List;
 import java.util.Optional;
 

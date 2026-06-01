@@ -1,14 +1,15 @@
 package controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import persistence.DataAccessObject;
 import service.UserService;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
+
 
 public class UserController {
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);

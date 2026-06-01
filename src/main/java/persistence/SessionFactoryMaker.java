@@ -1,6 +1,5 @@
 package persistence;
 
-import lombok.AccessLevel;
 import lombok.Setter;
 import model.Order;
 import model.Product;

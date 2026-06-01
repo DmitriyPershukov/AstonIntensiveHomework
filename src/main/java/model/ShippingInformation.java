@@ -2,7 +2,6 @@ package model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
