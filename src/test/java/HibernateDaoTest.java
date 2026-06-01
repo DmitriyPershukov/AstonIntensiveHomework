@@ -106,6 +106,26 @@ public class HibernateDaoTest {
         );
     }
 
+    private static Stream<Arguments> supplyExceptionUserUpdatedUserPairs(){
+        return Stream.of(
+                Arguments.of(org.hibernate.exception.ConstraintViolationException.class,
+                        new User("Chris", "chris@gmail.com", 35),
+                        new User("John", "chris@gmail.com", 35)),
+                Arguments.of(org.hibernate.exception.ConstraintViolationException.class,
+                        new User("Chris", "chris@gmail.com", 35),
+                        new User("Chris", "john@gmail.com", 35)),
+                Arguments.of(jakarta.validation.ConstraintViolationException.class,
+                        new User("Chris", "chris@gmail.com", 35),
+                        new User("A", "chris@gmail.com", 35)),
+                Arguments.of(jakarta.validation.ConstraintViolationException.class,
+                        new User("Chris", "chris@gmail.com", 35),
+                        new User("Chris", "Chris", 35)),
+                Arguments.of(jakarta.validation.ConstraintViolationException.class,
+                        new User("Chris", "chris@gmail.com", 35),
+                        new User("Chris", "chris@gmail.com", -1))
+        );
+    }
+
     @Test
     void testUpdate(){
         User user = new User("John", "john@gmail.com", 35);
@@ -119,10 +139,16 @@ public class HibernateDaoTest {
     }
 
     @ParameterizedTest
-    @MethodSource("supplyExceptionUserPairs")
-    void testUpdateThrowsConstraintException(Class<Throwable> expectedException, User newUser){
+    @MethodSource("supplyExceptionUserUpdatedUserPairs")
+    void testUpdateThrowsConstraintException(Class<Throwable> expectedException,
+                                             User newUser,
+                                             User updatedUser){
         User user = new User("John", "john@gmail.com", 35);
         SessionFactoryMaker.getFactory().inTransaction(session -> session.persist(user));
+        SessionFactoryMaker.getFactory().inTransaction(session -> session.persist(newUser));
+        newUser.setName(updatedUser.getName());
+        newUser.setEmail(updatedUser.getEmail());
+        newUser.setAge(updatedUser.getAge());
         Assertions.assertThrows(expectedException, () -> userDao.update(newUser));
     }
 
