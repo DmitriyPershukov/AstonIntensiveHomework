@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class UserServiceTest {
     @Mock
     private HibernateDao<User> userDao;
@@ -40,14 +44,14 @@ public class UserServiceTest {
     void testDeleteUser(){
         Long id = 1L;
         userService.deleteUser(id);
-        Mockito.verify(userDao).deleteById(Mockito.eq(id));
+        verify(userDao).deleteById(eq(id));
     }
 
     @ParameterizedTest
     @MethodSource("supplyUsers")
     void testCreateUser(User user){
         userService.createUser(user);
-        Mockito.verify(userDao).save(Mockito.eq(user));
+        verify(userDao).save(eq(user));
     }
 
     static Stream<User> supplyUsers(){
@@ -60,15 +64,15 @@ public class UserServiceTest {
     @ParameterizedTest
     @MethodSource("supplyIdUsers")
     void testUpdateUser(Long id, User user){
-        Mockito.when(userDao.findById(Mockito.eq(id))).thenReturn(Optional.ofNullable(user));
+        when(userDao.findById(eq(id))).thenReturn(Optional.ofNullable(user));
         userService.updateUser(id, user);
-        Mockito.verify(userDao).update(Mockito.eq(user));
+        verify(userDao).update(eq(user));
     }
 
     @ParameterizedTest
     @MethodSource("supplyIdUsers")
     void testUpdateUserThrowsExceptionWhenOldUserNotFound(Long id, User user){
-        Mockito.when(userDao.findById(Mockito.eq(id))).thenReturn(Optional.empty());
+        when(userDao.findById(eq(id))).thenReturn(Optional.empty());
         Assertions.assertThrows(EntityNotFoundException.class, () -> userService.updateUser(id, user));
     }
 
@@ -84,33 +88,33 @@ public class UserServiceTest {
     @ParameterizedTest
     @MethodSource("supplyIdUsers")
     void testGetUserById(Long id, User user){
-        Mockito.when(userDao.findById(Mockito.eq(id))).thenReturn(Optional.ofNullable(user));
+        when(userDao.findById(eq(id))).thenReturn(Optional.ofNullable(user));
         Assertions.assertEquals(user, userService.getUserById(id));
     }
 
     @Test
     void testGetUserByIdThrowsExceptionWhenOldUserNotFound(){
         Long id = 1L;
-        Mockito.when(userDao.findById(Mockito.eq(id))).thenReturn(Optional.empty());
+        when(userDao.findById(eq(id))).thenReturn(Optional.empty());
         Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getUserById(id));
     }
 
     @Test
     void testGetAllUsers(){
         List<User> users = supplyUsers().toList();
-        Mockito.when(userDao.findAll()).thenReturn(users);
+        when(userDao.findAll()).thenReturn(users);
         Assertions.assertIterableEquals(users, userService.getAllUsers());
     }
 
     @Test
     void testExistsReturnsTrueIfEntityFound(){
-        Mockito.when(userDao.existsById(Mockito.eq(1L))).thenReturn(true);
+        when(userDao.existsById(eq(1L))).thenReturn(true);
         Assertions.assertTrue(userService.exists(1L));
     }
 
     @Test
     void testExistsReturnsFalseIfEntityNotFound(){
-        Mockito.when(userDao.existsById(Mockito.eq(1L))).thenReturn(false);
+        when(userDao.existsById(eq(1L))).thenReturn(false);
         Assertions.assertFalse(userService.exists(1L));
     }
 }
