@@ -9,6 +9,6 @@ public class Main {
         DataAccessObject<User> userDao = new HibernateDao(User.class);
         UserService userService = new UserService(userDao);
         UserController userController = new UserController(userService);
-        userController.interactWithUser(userDao);
+        userController.interactWithUser();
     }
 }

@@ -1,14 +1,15 @@
 package controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import persistence.DataAccessObject;
 import service.UserService;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
+
 
 public class UserController {
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -18,7 +19,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    public void interactWithUser(DataAccessObject<User> userDao){
+    public void interactWithUser(){
         logger.info("Starting user console interaction.");
         while(true){
             System.out.println("Введите код операции:");
@@ -93,9 +94,10 @@ public class UserController {
         try{
             userService.createUser(newUser);
             System.out.println("Пользователь успешно сохранен");
-        } catch (ConstraintViolationException ex){
-            String.format("При попытке добавить пользователя произошла ошибка: %s",
-                    ex.getMessage());
+        } catch (org.hibernate.exception.ConstraintViolationException
+                 | jakarta.validation.ConstraintViolationException ex){
+            System.out.println(String.format("При попытке добавить пользователя произошла ошибка: %s",
+                    ex.getMessage()));
         }
     }
 
@@ -118,10 +120,11 @@ public class UserController {
         }
         try {
             userService.updateUser(id.get(), newUser);
-            String.format("Пользователь с id %d успешно обновлен.", id.get());
+            System.out.println(String.format("Пользователь с id %d успешно обновлен.", id.get()));
         } catch (EntityNotFoundException ex){
             System.out.println(String.format("Пользователь с id %d не найден.", id.get()));
-        } catch (ConstraintViolationException ex){
+        } catch (org.hibernate.exception.ConstraintViolationException
+                 | jakarta.validation.ConstraintViolationException ex){
             System.out.println(String.format("При попытке изменить пользователя произошла ошибка: %s",
                     ex.getMessage()));
         }

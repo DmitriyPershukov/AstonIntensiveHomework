@@ -3,7 +3,7 @@ WORKDIR /app
 COPY ./pom.xml .
 RUN mvn dependency:go-offline
 COPY . .
-RUN mvn clean package -o
+RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21 AS run
 COPY --from=build app/target/AstonIntensiveHomework-1.0-SNAPSHOT.jar app.jar
