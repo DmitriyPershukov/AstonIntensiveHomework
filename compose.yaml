@@ -1,12 +1,10 @@
 services:
-  app:
+  user-service:
     build: .
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PW=${POSTGRES_PW}
       - POSTGRES_DB=${POSTGRES_DB}
-    depends_on:
-      - postgres
 
   postgres:
     image: postgres:18
