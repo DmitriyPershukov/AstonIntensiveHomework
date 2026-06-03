@@ -5,6 +5,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PW=${POSTGRES_PW}
       - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "8080:8080"
 
   postgres:
     image: postgres:18
