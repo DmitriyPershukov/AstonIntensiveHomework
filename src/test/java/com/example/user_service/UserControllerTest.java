@@ -158,7 +158,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @Disabled
     void testUpdateUserReturnsConflictHttpStatusWhenUserViolatesDatabaseIntegrity() throws Exception {
         UserDto userDto = new UserDto("Martha", "martha@gmail.com", 33);
         String exceptionMessage = "Details: exceptionMessage";
