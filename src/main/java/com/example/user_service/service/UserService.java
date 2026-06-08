@@ -7,6 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import com.example.user_service.model.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -23,8 +24,10 @@ public class UserService {
     }
 
     public List<UserDto> getAllUsers(){
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .map(UserMappingUtils::mapToUserDto).toList();
+        List<User> users = StreamSupport
+                .stream(userRepository.findAll().spliterator(), false)
+                .toList();
+        return UserMappingUtils.mapToListUserDto(new ArrayList<>(users));
     }
 
     public UserDto getUserById(Long id){
