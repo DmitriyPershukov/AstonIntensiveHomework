@@ -1,4 +1,4 @@
-package model;
+package com.example.user_service.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;
@@ -21,8 +20,6 @@ import lombok.Setter;
 import lombok.AccessLevel;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -58,17 +55,6 @@ public class User {
     @Column(name = "created_at",nullable = false)
     @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = Order_.CUSTOMER,
-            cascade = {
-            CascadeType.PERSIST,
-            CascadeType.REMOVE,
-            CascadeType.MERGE})
-    @Setter(AccessLevel.NONE)
-    List<Order> orders = new ArrayList<>();
-
-    @Embedded
-    ShippingInformation shippingInformation;
 
     @PrePersist
     private void onCreate() {
