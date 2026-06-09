@@ -1,6 +1,6 @@
 services:
   user-service:
-    build: .
+    build: user-service
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PW=${POSTGRES_PW}
