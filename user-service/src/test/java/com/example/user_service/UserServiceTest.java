@@ -16,6 +16,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
+import org.springframework.kafka.core.KafkaTemplate;
+
 import static com.example.user_service.model.UserMappingUtils.mapToUserEntity;
 
 import java.util.List;
@@ -29,6 +31,8 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private KafkaTemplate<String, String> kafkaTemplate;
     private UserService userService;
     private MockitoSession mockitoSession;
 
@@ -37,7 +41,7 @@ public class UserServiceTest {
         mockitoSession = Mockito.mockitoSession()
                         .initMocks(this)
                         .startMocking();
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository , kafkaTemplate);
     }
 
     @AfterEach
@@ -48,7 +52,8 @@ public class UserServiceTest {
     @Test
     void testDeleteUser(){
         Long id = 1L;
-        when(userRepository.existsById(eq(1L))).thenReturn(true);
+        User user = new User("Martha", "martha@gmail.com", 35);
+        when(userRepository.findById(eq(1L))).thenReturn(Optional.ofNullable(user));
         userService.deleteUser(id);
         verify(userRepository).deleteById(eq(id));
     }
