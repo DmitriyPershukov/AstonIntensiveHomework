@@ -59,3 +59,4 @@ services:
       SERVER_PORT: 9090
     depends_on:
       - kafka
+    attach: false
