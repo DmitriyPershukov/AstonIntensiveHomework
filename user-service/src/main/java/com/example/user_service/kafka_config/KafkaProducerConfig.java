@@ -1,4 +1,4 @@
-package com.example.user_service.kafkaconfig;
+package com.example.user_service.kafka_config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
