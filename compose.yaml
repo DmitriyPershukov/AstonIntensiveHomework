@@ -13,6 +13,11 @@ services:
     build: notification-service
     environment:
       - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PW=${EMAIL_PW}
+      - EMAIL_DEBUG=${EMAIL_DEBUG}
     ports:
       - "8081:8081"
 
