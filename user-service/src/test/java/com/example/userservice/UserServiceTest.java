@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
+    private static final String KAFKA_TOPIC_NAME = "users";
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -56,6 +57,10 @@ public class UserServiceTest {
         when(userRepository.findById(eq(1L))).thenReturn(Optional.ofNullable(user));
         userService.deleteUser(id);
         verify(userRepository).deleteById(eq(id));
+        verify(kafkaTemplate)
+                .send(
+                    eq(KAFKA_TOPIC_NAME),
+                    eq(String.format("deleted %s", user.getEmail())));
     }
 
     @ParameterizedTest
@@ -63,6 +68,7 @@ public class UserServiceTest {
     void testCreateUser(UserDto userDto){
         userService.createUser(userDto);
         verify(userRepository).save(eq(mapToUserEntity(userDto)));
+        verify(kafkaTemplate).send(eq(KAFKA_TOPIC_NAME), eq(String.format("created %s", userDto.email())));
     }
 
     static Stream<UserDto> supplyUsers(){
