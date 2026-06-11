@@ -12,11 +12,11 @@ spring:
     port: ${EMAIL_PORT}
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PW}
-    transport:
-      protocol: smtp
-    smtp:
-      auth: true
-      starttls:
-        enable: true
-        required: true
+    protocol: smtp
+    tls: true
     debug: ${EMAIL_DEBUG}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
