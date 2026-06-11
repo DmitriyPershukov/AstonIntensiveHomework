@@ -1,4 +1,4 @@
-package com.example.notificationservice.kafka_consumer;
+package com.example.notificationservice.kafka;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
