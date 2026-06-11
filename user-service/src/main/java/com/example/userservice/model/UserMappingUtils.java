@@ -1,7 +1,6 @@
-package com.example.user_service.model;
+package com.example.userservice.model;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 public class UserMappingUtils {
     public static UserDto mapToUserDto(User user){

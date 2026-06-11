@@ -1,10 +1,9 @@
-package com.example.user_service;
+package com.example.userservice;
 
-import com.example.user_service.controller.UserController;
-import com.example.user_service.model.UserDto;
-import com.example.user_service.service.UserService;
+import com.example.userservice.controller.UserController;
+import com.example.userservice.model.UserDto;
+import com.example.userservice.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;

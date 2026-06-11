@@ -1,13 +1,8 @@
-package com.example.user_service.controller;
+package com.example.userservice.controller;
 
-import com.example.user_service.model.UserDto;
-import com.example.user_service.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.userservice.model.UserDto;
+import com.example.userservice.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
-package com.example.user_service.service;
+package com.example.userservice.service;
 
-import com.example.user_service.model.UserDto;
-import com.example.user_service.model.UserMappingUtils;
-import com.example.user_service.repository.UserRepository;
+import com.example.userservice.model.UserDto;
+import com.example.userservice.model.UserMappingUtils;
+import com.example.userservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import com.example.user_service.model.User;
+import com.example.userservice.model.User;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import static com.example.user_service.model.UserMappingUtils.mapToUserDto;
-import static com.example.user_service.model.UserMappingUtils.mapToUserEntity;
+import static com.example.userservice.model.UserMappingUtils.mapToUserDto;
+import static com.example.userservice.model.UserMappingUtils.mapToUserEntity;
 
 @Service
 public class UserService {

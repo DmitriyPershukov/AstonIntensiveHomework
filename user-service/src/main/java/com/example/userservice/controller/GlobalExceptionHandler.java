@@ -1,4 +1,4 @@
-package com.example.user_service.controller;
+package com.example.userservice.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;

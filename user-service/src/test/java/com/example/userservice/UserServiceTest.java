@@ -1,10 +1,10 @@
-package com.example.user_service;
+package com.example.userservice;
 
-import com.example.user_service.model.User;
-import com.example.user_service.model.UserDto;
-import com.example.user_service.model.UserMappingUtils;
-import com.example.user_service.repository.UserRepository;
-import com.example.user_service.service.UserService;
+import com.example.userservice.model.User;
+import com.example.userservice.model.UserDto;
+import com.example.userservice.model.UserMappingUtils;
+import com.example.userservice.repository.UserRepository;
+import com.example.userservice.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import static com.example.user_service.model.UserMappingUtils.mapToUserEntity;
+import static com.example.userservice.model.UserMappingUtils.mapToUserEntity;
 
 import java.util.List;
 import java.util.Optional;

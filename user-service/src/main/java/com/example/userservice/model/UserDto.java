@@ -1,4 +1,4 @@
-package com.example.user_service.model;
+package com.example.userservice.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;

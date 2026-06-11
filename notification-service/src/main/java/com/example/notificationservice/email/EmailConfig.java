@@ -1,4 +1,4 @@
-package com.example.notification_service.email;
+package com.example.notificationservice.email;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
