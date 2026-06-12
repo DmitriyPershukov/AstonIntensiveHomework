@@ -14,5 +14,5 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 server:
-  port: 8080
+  port: ${USER_SERVICE_PORT}
 

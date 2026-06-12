@@ -21,4 +21,4 @@ spring:
           auth: true
           starttls.enable: true
 server:
-  port: 8081
+  port: ${NOTIFICATION_SERVICE_PORT}

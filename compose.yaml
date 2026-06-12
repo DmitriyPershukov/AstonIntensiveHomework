@@ -6,8 +6,9 @@ services:
       - POSTGRES_PW=${POSTGRES_PW}
       - POSTGRES_DB=${POSTGRES_DB}
       - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
     ports:
-      - "8080:8080"
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
 
   notification-service:
     build: notification-service
@@ -18,8 +19,9 @@ services:
       - EMAIL_USERNAME=${EMAIL_USERNAME}
       - EMAIL_PW=${EMAIL_PW}
       - EMAIL_DEBUG=${EMAIL_DEBUG}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
     ports:
-      - "8081:8081"
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
     restart: on-failure
 
   postgres:
