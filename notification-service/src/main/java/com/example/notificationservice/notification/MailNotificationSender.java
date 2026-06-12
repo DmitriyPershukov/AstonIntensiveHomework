@@ -17,17 +17,23 @@ public class MailNotificationSender implements NotificationSender{
         this.emailSender = emailSender;
     }
 
-    public void sendNotification(String message){
-        String event = message.split(" ")[0];
-        String to_address = message.split(" ")[1];
+    private void sendNotification(String email, String notificationText){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(to_address);
+        mailMessage.setTo(email);
         mailMessage.setSubject(notificationSubject);
-        if(event.equals("created")){
-            mailMessage.setText(createdNotification);
-        } else {
-            mailMessage.setText(deletedNotification);
-        }
+        mailMessage.setText(notificationText);
         emailSender.send(mailMessage);
     }
+
+    @Override
+    public void sendCreatedNotification(String email) {
+        sendNotification(email, createdNotification);
+    }
+
+    @Override
+    public void sendDeletedNotification(String email) {
+        sendNotification(email, deletedNotification);
+    }
+
+
 }

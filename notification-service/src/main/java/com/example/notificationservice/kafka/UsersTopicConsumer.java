@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UsersTopicConsumer {
-    private NotificationSender notificationSender;
+    private MessageProcessor messageProcessor;
 
-    public UsersTopicConsumer(NotificationSender notificationSender) {
-        this.notificationSender = notificationSender;
+    public UsersTopicConsumer(MessageProcessor messageProcessor) {
+        this.messageProcessor = messageProcessor;
     }
 
     @KafkaListener(topics = "users", groupId = "users.email-notification")
     public void listenUsers(String message) {
-        notificationSender.sendNotification(message);
+        messageProcessor.process(message);
     }
 }

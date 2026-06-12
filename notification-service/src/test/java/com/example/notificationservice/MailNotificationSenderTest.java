@@ -13,7 +13,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class MailNotificationSenderTest {
     private static final String expectedNotificationSubject = "Изменение статуса аккаунта.";
@@ -45,7 +44,7 @@ public class MailNotificationSenderTest {
         expectedMailMessage.setTo(emailAddress);
         expectedMailMessage.setSubject(expectedNotificationSubject);
         expectedMailMessage.setText(expectedCreatedNotification);
-        mailNotificationSender.sendNotification(String.format("created %s", emailAddress));
+        mailNotificationSender.sendCreatedNotification(emailAddress);
         verify(mailSender).send(eq(expectedMailMessage));
     }
 
@@ -56,7 +55,7 @@ public class MailNotificationSenderTest {
         expectedMailMessage.setTo(emailAddress);
         expectedMailMessage.setSubject(expectedNotificationSubject);
         expectedMailMessage.setText(expectedDeletedNotification);
-        mailNotificationSender.sendNotification(String.format("deleted %s", emailAddress));
+        mailNotificationSender.sendDeletedNotification(emailAddress);
         verify(mailSender).send(eq(expectedMailMessage));
     }
 }

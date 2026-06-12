@@ -1,5 +1,7 @@
 package com.example.notificationservice.notification;
 
 public interface NotificationSender {
-    void sendNotification(String message);
+    void sendCreatedNotification(String email);
+
+    void sendDeletedNotification(String email);
 }
