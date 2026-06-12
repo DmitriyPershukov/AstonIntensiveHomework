@@ -1,4 +1,4 @@
-package com.example.notificationservice.kafka;
+package com.example.notificationservice.message;
 
 import com.example.notificationservice.notification.NotificationSender;
 import org.springframework.stereotype.Service;

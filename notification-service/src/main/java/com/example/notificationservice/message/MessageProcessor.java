@@ -1,4 +1,4 @@
-package com.example.notificationservice.kafka;
+package com.example.notificationservice.message;
 
 public interface MessageProcessor {
     void process(String message);
