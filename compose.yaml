@@ -18,8 +18,6 @@ services:
       - EMAIL_USERNAME=${EMAIL_USERNAME}
       - EMAIL_PW=${EMAIL_PW}
       - EMAIL_DEBUG=${EMAIL_DEBUG}
-    ports:
-      - "8081:8081"
     restart: on-failure
 
   postgres:
