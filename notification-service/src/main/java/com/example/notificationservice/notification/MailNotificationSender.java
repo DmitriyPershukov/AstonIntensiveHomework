@@ -1,11 +1,11 @@
-package com.example.notificationservice.mail;
+package com.example.notificationservice.notification;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationSender {
+public class MailNotificationSender implements NotificationSender{
     private static final String notificationSubject = "Изменение статуса аккаунта.";
     private static final String createdNotification =
             "Здравствуйте! Ваш аккаунт для user-service был успешно создан.";
@@ -13,7 +13,7 @@ public class NotificationSender {
 
     private JavaMailSender emailSender;
 
-    public NotificationSender(JavaMailSender emailSender) {
+    public MailNotificationSender(JavaMailSender emailSender) {
         this.emailSender = emailSender;
     }
 
@@ -21,7 +21,7 @@ public class NotificationSender {
         String event = message.split(" ")[0];
         String to_address = message.split(" ")[1];
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("noreply@notificationservice.com");
+        //mailMessage.setFrom("noreply@notificationservice.com");
         mailMessage.setTo(to_address);
         mailMessage.setSubject(notificationSubject);
         if(event.equals("created")){

@@ -1,6 +1,6 @@
 package com.example.notificationservice.kafka;
 
-import com.example.notificationservice.mail.NotificationSender;
+import com.example.notificationservice.notification.NotificationSender;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
