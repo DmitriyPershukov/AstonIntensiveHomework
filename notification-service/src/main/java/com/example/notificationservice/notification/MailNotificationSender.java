@@ -21,7 +21,6 @@ public class MailNotificationSender implements NotificationSender{
         String event = message.split(" ")[0];
         String to_address = message.split(" ")[1];
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        //mailMessage.setFrom("noreply@notificationservice.com");
         mailMessage.setTo(to_address);
         mailMessage.setSubject(notificationSubject);
         if(event.equals("created")){
