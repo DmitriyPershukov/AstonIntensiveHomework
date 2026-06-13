@@ -3,6 +3,8 @@ package com.example.notificationservice.message;
 import com.example.notificationservice.notification.NotificationSender;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public class KafkaMessageProcessor implements MessageProcessor{
     private NotificationSender notificationSender;
@@ -15,13 +17,18 @@ public class KafkaMessageProcessor implements MessageProcessor{
     public void process(String message) {
        String event = message.split(" ")[0];
        String email = message.split(" ")[1];
-       switch (event){
-           case "created":
-               notificationSender.sendCreatedNotification(email);
-               break;
-           case "deleted":
-               notificationSender.sendDeletedNotification(email);
-               break;
+       try{
+           switch (event){
+               case "created":
+                   notificationSender.sendCreatedNotification(email);
+                   break;
+               case "deleted":
+                   notificationSender.sendDeletedNotification(email);
+                   break;
+           }
+       } catch (IOException ex){
+
        }
+
     }
 }

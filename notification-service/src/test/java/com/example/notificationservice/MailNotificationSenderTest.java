@@ -11,6 +11,8 @@ import org.mockito.MockitoSession;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.io.IOException;
+
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -38,7 +40,7 @@ public class MailNotificationSenderTest {
     }
 
     @Test
-    void testSendNotificationSendCorrectEmailUponCreationMessage(){
+    void testSendNotificationSendCorrectEmailUponCreationMessage() throws IOException {
         String emailAddress = "bill@gmail.com";
         SimpleMailMessage expectedMailMessage = new SimpleMailMessage();
         expectedMailMessage.setTo(emailAddress);
@@ -49,7 +51,7 @@ public class MailNotificationSenderTest {
     }
 
     @Test
-    void testSendNotificationSendCorrectEmailUponDeletionMessage(){
+    void testSendNotificationSendCorrectEmailUponDeletionMessage() throws IOException {
         String emailAddress = "bill@gmail.com";
         SimpleMailMessage expectedMailMessage = new SimpleMailMessage();
         expectedMailMessage.setTo(emailAddress);

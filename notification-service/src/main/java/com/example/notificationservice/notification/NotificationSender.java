@@ -1,7 +1,9 @@
 package com.example.notificationservice.notification;
 
-public interface NotificationSender {
-    void sendCreatedNotification(String email);
+import java.io.IOException;
 
-    void sendDeletedNotification(String email);
+public interface NotificationSender {
+    void sendCreatedNotification(String email) throws IOException;
+
+    void sendDeletedNotification(String email) throws IOException;
 }

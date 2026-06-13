@@ -1,8 +1,11 @@
 package com.example.notificationservice.notification;
 
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class MailNotificationSender implements NotificationSender{
@@ -17,23 +20,25 @@ public class MailNotificationSender implements NotificationSender{
         this.emailSender = emailSender;
     }
 
-    private void sendNotification(String email, String notificationText){
+    private void sendNotification(String email, String notificationText) throws IOException {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
         mailMessage.setSubject(notificationSubject);
         mailMessage.setText(notificationText);
-        emailSender.send(mailMessage);
+        try{
+            emailSender.send(mailMessage);
+        } catch (MailException ex){
+            throw new IOException("Service failed to send notification mail.");
+        }
     }
 
     @Override
-    public void sendCreatedNotification(String email) {
+    public void sendCreatedNotification(String email) throws IOException {
         sendNotification(email, createdNotification);
     }
 
     @Override
-    public void sendDeletedNotification(String email) {
+    public void sendDeletedNotification(String email) throws IOException {
         sendNotification(email, deletedNotification);
     }
-
-
 }

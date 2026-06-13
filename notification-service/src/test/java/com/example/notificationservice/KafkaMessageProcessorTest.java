@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 
+import java.io.IOException;
+
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -32,7 +34,7 @@ public class KafkaMessageProcessorTest {
     }
 
     @Test
-    void testProcessCallsCorrectMethodUponCreatedMessage(){
+    void testProcessCallsCorrectMethodUponCreatedMessage() throws IOException {
         String email = "test@email.com";
         String message = String.format("created %s", email);
         kafkaMessageProcessor.process(message);
@@ -40,7 +42,7 @@ public class KafkaMessageProcessorTest {
     }
 
     @Test
-    void testProcessCallsCorrectMethodUponDeletedMessage(){
+    void testProcessCallsCorrectMethodUponDeletedMessage() throws IOException {
         String email = "test@email.com";
         String message = String.format("deleted %s", email);
         kafkaMessageProcessor.process(message);
