@@ -2,19 +2,25 @@ package com.example.notificationservice;
 
 import com.example.notificationservice.notification.MailNotificationSender;
 import com.example.notificationservice.notification.NotificationSender;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class MailNotificationSenderTest {
     private static final String expectedNotificationSubject = "Изменение статуса аккаунта.";
@@ -59,5 +65,17 @@ public class MailNotificationSenderTest {
         expectedMailMessage.setText(expectedDeletedNotification);
         mailNotificationSender.sendDeletedNotification(emailAddress);
         verify(mailSender).send(eq(expectedMailMessage));
+    }
+
+    @Test
+    void testSendNotificationThrowsIOExceptionWhenMailSenderThrowsMailException(){
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        String emailAddress = "test@email.com";
+        mailMessage.setTo(emailAddress);
+        mailMessage.setSubject(expectedNotificationSubject);
+        mailMessage.setText(expectedCreatedNotification);
+        doThrow(new MailSendException("")).when(mailSender).send(eq(mailMessage));
+        Assertions.assertThrows(IOException.class,
+                () -> mailNotificationSender.sendCreatedNotification(emailAddress));
     }
 }
