@@ -1,5 +1,6 @@
 package com.example.userservice.service;
 
+import com.example.userservice.message.MessageProducer;
 import com.example.userservice.model.UserDto;
 import com.example.userservice.model.UserMappingUtils;
 import com.example.userservice.repository.UserRepository;
@@ -20,11 +21,11 @@ import static com.example.userservice.model.UserMappingUtils.mapToUserEntity;
 public class UserService {
     private static final String ENTITY_NOT_FOUND_MESSAGE_TEMPLATE = "User with id=%s doesn't exist.";
     private UserRepository userRepository;
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private MessageProducer messageProducer;
 
-    public UserService(UserRepository userRepository, KafkaTemplate<String, String> kafkaTemplate){
+    public UserService(UserRepository userRepository, MessageProducer messageProducer){
         this.userRepository = userRepository;
-        this.kafkaTemplate = kafkaTemplate;
+        this.messageProducer = messageProducer;
     }
 
     public List<UserDto> getAllUsers(){
@@ -44,7 +45,7 @@ public class UserService {
 
     public void createUser(UserDto userDto){
         userRepository.save(mapToUserEntity(userDto));
-        kafkaTemplate.send("users", String.format("created %s", userDto.email()));
+        messageProducer.send(String.format("created %s", userDto.email()));
     }
 
     public void updateUser(Long id, UserDto userDto){
@@ -64,7 +65,7 @@ public class UserService {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE_TEMPLATE, id));
         }
         userRepository.deleteById(id);
-        kafkaTemplate.send("users", String.format("deleted %s", user.get().getEmail()));
+        messageProducer.send(String.format("deleted %s", user.get().getEmail()));
     }
 
     public boolean exists(Long id){

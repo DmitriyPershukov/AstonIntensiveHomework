@@ -12,7 +12,7 @@ public class UsersTopicConsumer {
         this.messageProcessor = messageProcessor;
     }
 
-    @KafkaListener(topics = "${kafka.topic}", groupId = "$kafka.group-id")
+    @KafkaListener(topics = "${spring.kafka.topic}", groupId = "${spring.kafka.group-id}")
     public void listenUsers(String message) {
         messageProcessor.process(message);
     }

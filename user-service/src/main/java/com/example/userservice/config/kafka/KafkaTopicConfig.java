@@ -25,6 +25,6 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic userCreatedDeletedTopic() {
-        return new NewTopic("${kafka.topic}", 1, (short) 1);
+        return new NewTopic("${spring.kafka.topic}", 1, (short) 1);
     }
 }

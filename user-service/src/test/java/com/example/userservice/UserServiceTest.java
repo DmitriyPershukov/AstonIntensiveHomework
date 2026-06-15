@@ -1,5 +1,6 @@
 package com.example.userservice;
 
+import com.example.userservice.message.MessageProducer;
 import com.example.userservice.model.User;
 import com.example.userservice.model.UserDto;
 import com.example.userservice.model.UserMappingUtils;
@@ -16,7 +17,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
-import org.springframework.kafka.core.KafkaTemplate;
 
 import static com.example.userservice.model.UserMappingUtils.mapToUserEntity;
 
@@ -33,7 +33,7 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private MessageProducer messageProducer;
     private UserService userService;
     private MockitoSession mockitoSession;
 
@@ -42,7 +42,7 @@ public class UserServiceTest {
         mockitoSession = Mockito.mockitoSession()
                         .initMocks(this)
                         .startMocking();
-        userService = new UserService(userRepository , kafkaTemplate);
+        userService = new UserService(userRepository , messageProducer);
     }
 
     @AfterEach
@@ -57,10 +57,8 @@ public class UserServiceTest {
         when(userRepository.findById(eq(1L))).thenReturn(Optional.ofNullable(user));
         userService.deleteUser(id);
         verify(userRepository).deleteById(eq(id));
-        verify(kafkaTemplate)
-                .send(
-                    eq(KAFKA_TOPIC_NAME),
-                    eq(String.format("deleted %s", user.getEmail())));
+        verify(messageProducer)
+                .send(eq(String.format("deleted %s", user.getEmail())));
     }
 
     @ParameterizedTest
@@ -68,7 +66,7 @@ public class UserServiceTest {
     void testCreateUser(UserDto userDto){
         userService.createUser(userDto);
         verify(userRepository).save(eq(mapToUserEntity(userDto)));
-        verify(kafkaTemplate).send(eq(KAFKA_TOPIC_NAME), eq(String.format("created %s", userDto.email())));
+        verify(messageProducer).send(eq(String.format("created %s", userDto.email())));
     }
 
     static Stream<UserDto> supplyUsers(){
