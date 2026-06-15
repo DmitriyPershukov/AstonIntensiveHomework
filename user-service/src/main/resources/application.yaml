@@ -10,6 +10,7 @@ spring:
       ddl-auto: create-drop
   kafka:
     bootstrap-servers: kafka:${KAFKA_BROKER_PORT}
+    topic: ${KAFKA_TOPIC}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
