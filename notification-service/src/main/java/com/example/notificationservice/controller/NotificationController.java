@@ -15,6 +15,9 @@ import java.io.IOException;
 @RequestMapping("/notification")
 @Validated
 public class NotificationController {
+    private static final String EVENT_VALIDATION_MESSAGE = "Event must be either created or deleted.";
+    private static final String EMAIL_VALIDATION_MESSAGE =
+            "Email parameter should contain valid email address.";
     private NotificationSender notificationSender;
 
     public NotificationController(NotificationSender notificationSender) {
@@ -23,10 +26,10 @@ public class NotificationController {
 
     @PostMapping
     public void sendNotification(
-            @Pattern(regexp = "created|deleted", message = "Event must be either created or deleted.")
+            @Pattern(regexp = "created|deleted", message = EVENT_VALIDATION_MESSAGE)
             @RequestParam
             String event,
-            @Email(message = "Email parameter should contain valid email address.")
+            @Email(message = EMAIL_VALIDATION_MESSAGE)
             @RequestParam
             String email) throws IOException {
         switch (event){
