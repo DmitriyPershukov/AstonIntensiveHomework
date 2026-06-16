@@ -1,4 +1,4 @@
-package com.example.userservice.config.kafka;
+package com.example.userservice.message.kafka.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;

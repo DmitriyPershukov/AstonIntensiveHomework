@@ -1,4 +1,4 @@
-package com.example.notificationservice.kafka;
+package com.example.notificationservice.message.kafka;
 
 import com.example.notificationservice.message.MessageProcessor;
 import org.springframework.kafka.annotation.KafkaListener;

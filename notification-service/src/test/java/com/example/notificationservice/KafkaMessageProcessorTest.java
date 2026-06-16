@@ -1,6 +1,6 @@
 package com.example.notificationservice;
 
-import com.example.notificationservice.message.KafkaMessageProcessor;
+import com.example.notificationservice.message.kafka.KafkaMessageProcessor;
 import com.example.notificationservice.notification.NotificationSender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

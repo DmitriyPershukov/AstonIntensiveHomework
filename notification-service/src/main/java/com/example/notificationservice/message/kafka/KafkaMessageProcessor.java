@@ -1,12 +1,13 @@
-package com.example.notificationservice.message;
+package com.example.notificationservice.message.kafka;
 
+import com.example.notificationservice.message.MessageProcessor;
 import com.example.notificationservice.notification.NotificationSender;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
-public class KafkaMessageProcessor implements MessageProcessor{
+public class KafkaMessageProcessor implements MessageProcessor {
     private NotificationSender notificationSender;
 
     public KafkaMessageProcessor(NotificationSender notificationSender) {
