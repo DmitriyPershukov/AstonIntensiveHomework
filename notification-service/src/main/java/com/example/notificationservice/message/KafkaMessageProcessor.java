@@ -14,21 +14,16 @@ public class KafkaMessageProcessor implements MessageProcessor{
     }
 
     @Override
-    public void process(String message) {
+    public void process(String message) throws IOException {
        String event = message.split(" ")[0];
        String email = message.split(" ")[1];
-       try{
-           switch (event){
-               case "created":
-                   notificationSender.sendCreatedNotification(email);
-                   break;
-               case "deleted":
-                   notificationSender.sendDeletedNotification(email);
-                   break;
-           }
-       } catch (IOException ex){
-
+       switch (event) {
+           case "created":
+               notificationSender.sendCreatedNotification(email);
+               break;
+           case "deleted":
+               notificationSender.sendDeletedNotification(email);
+               break;
        }
-
     }
 }
