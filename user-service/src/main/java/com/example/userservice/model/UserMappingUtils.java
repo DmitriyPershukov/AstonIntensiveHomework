@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UserMappingUtils {
     public static UserDto mapToUserDto(User user){
-        return new UserDto(user.getName(), user.getEmail(), user.getAge());
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getAge());
     }
 
     public static User mapToUserEntity(UserDto userDto){
