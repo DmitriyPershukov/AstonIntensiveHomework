@@ -1,12 +1,31 @@
 services:
   user-service:
-    build: .
+    build: user-service
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PW=${POSTGRES_PW}
       - POSTGRES_DB=${POSTGRES_DB}
+      - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
     ports:
-      - "8080:8080"
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+
+  notification-service:
+    build: notification-service
+    environment:
+      - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PW=${EMAIL_PW}
+      - EMAIL_DEBUG=${EMAIL_DEBUG}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - KAFKA_GROUP_ID=${KAFKA_GROUP_ID}
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
+    restart: on-failure
 
   postgres:
     image: postgres:18
@@ -16,7 +35,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - "5432:5432"
-    restart: always
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -25,5 +43,38 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
     ports:
       - "5050:80"
-    restart: always
+    attach: false
+
+  kafka:
+    image: apache/kafka-native:4.2.1
+    environment:
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,DOCKER://0.0.0.0:${KAFKA_BROKER_PORT}
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:${KAFKA_BROKER_PORT}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT
+
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    attach: false
+
+  kafka-ui:
+    image: kafbat/kafka-ui:main
+    ports:
+      - "9090:9090"
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9093
+      SERVER_PORT: 9090
+    depends_on:
+      - kafka
     attach: false
