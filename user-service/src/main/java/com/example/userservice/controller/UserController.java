@@ -5,6 +5,7 @@ import com.example.userservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,23 +26,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService){
+    private final SimpleRepresentationModelAssembler<UserDto> representationModelAssembler;
+
+    public UserController(UserService userService,
+                          SimpleRepresentationModelAssembler<UserDto> representationModelAssembler){
         this.userService = userService;
+        this.representationModelAssembler = representationModelAssembler;
     }
 
     @GetMapping
     public CollectionModel<EntityModel<UserDto>> getAllUsers() {
-        List<EntityModel<UserDto>> userEntityModels = userService
-                .getAllUsers()
-                .stream()
-                .map(userDto -> EntityModel.of(userDto,
-                        linkTo(UserController.class)
-                        .slash(userDto.id())
-                        .withSelfRel()))
-                .toList();
-        var collectionModel = CollectionModel.of(userEntityModels);
-        collectionModel.add(linkTo(methodOn(UserController.class).getAllUsers()).withSelfRel());
-        return collectionModel;
+        return representationModelAssembler.toCollectionModel(userService.getAllUsers());
     }
 
     @GetMapping("/{userId}")
