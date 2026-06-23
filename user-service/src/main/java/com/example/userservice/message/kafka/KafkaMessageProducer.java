@@ -18,6 +18,6 @@ public class KafkaMessageProducer implements MessageProducer {
 
     @Override
     public void send(String message) {
-        kafkaTemplate.send("users", message);
+        kafkaTemplate.send(topic, message);
     }
 }

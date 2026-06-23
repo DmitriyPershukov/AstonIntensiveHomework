@@ -1,6 +1,9 @@
 services:
   user-service:
-    build: user-service
+    build:
+      context: user-service
+      args:
+        PORT: ${USER_SERVICE_PORT}
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PW=${POSTGRES_PW}
@@ -12,7 +15,10 @@ services:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
 
   notification-service:
-    build: notification-service
+    build:
+      context: notification-service
+      args:
+        PORT: ${NOTIFICATION_SERVICE_PORT}
     environment:
       - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
       - EMAIL_HOST=${EMAIL_HOST}
