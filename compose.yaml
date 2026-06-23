@@ -11,8 +11,12 @@ services:
       - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
       - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
 
   notification-service:
     build:
@@ -29,9 +33,13 @@ services:
       - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
       - KAFKA_TOPIC=${KAFKA_TOPIC}
       - KAFKA_GROUP_ID=${KAFKA_GROUP_ID}
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
     ports:
       - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
     restart: on-failure
+    depends_on:
+      eureka-server:
+        condition: service_healthy
     
   eureka-server:
     build:
@@ -42,6 +50,11 @@ services:
       - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
     ports:
       - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://eureka-server:${EUREKA_SERVER_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
 
   postgres:
     image: postgres:18
