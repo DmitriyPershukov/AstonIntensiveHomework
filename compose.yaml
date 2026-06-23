@@ -32,6 +32,16 @@ services:
     ports:
       - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
     restart: on-failure
+    
+  eureka-server:
+    build:
+      context: eureka-server
+      args:
+        PORT: ${EUREKA_SERVER_PORT}
+    environment:
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
 
   postgres:
     image: postgres:18
