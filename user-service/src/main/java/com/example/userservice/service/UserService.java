@@ -6,7 +6,6 @@ import com.example.userservice.model.UserMappingUtils;
 import com.example.userservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import com.example.userservice.model.User;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
