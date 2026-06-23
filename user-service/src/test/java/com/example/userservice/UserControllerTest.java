@@ -2,13 +2,20 @@ package com.example.userservice;
 
 import com.example.userservice.controller.UserController;
 import com.example.userservice.model.UserDto;
+import com.example.userservice.model.UserRepresentationModelAssembler;
 import com.example.userservice.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +40,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(
+        controllers = UserController.class,
+        includeFilters = @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = UserRepresentationModelAssembler.class))
 public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -56,13 +67,13 @@ public class UserControllerTest {
 
     private void assertResponseContainsUserDtos(ResultActions resultActions, List<UserDto> userDtos)
             throws Exception {
-        resultActions.andExpect(jsonPath("$.length()", is(userDtos.size())));
+        resultActions.andExpect(jsonPath("$._embedded.userDtoList.length()", is(userDtos.size())));
         for(int i = 0; i < userDtos.size(); i++){
             UserDto userDto = userDtos.get(i);
             resultActions
-                .andExpect(jsonPath(String.format("$[%d].name", i), is(userDto.name())))
-                .andExpect(jsonPath(String.format("$[%d].email", i), is(userDto.email())))
-                .andExpect(jsonPath(String.format("$[%d].age", i), is(userDto.age())));
+                .andExpect(jsonPath(String.format("$._embedded.userDtoList[%d].name", i), is(userDto.name())))
+                .andExpect(jsonPath(String.format("$._embedded.userDtoList[%d].email", i), is(userDto.email())))
+                .andExpect(jsonPath(String.format("$._embedded.userDtoList[%d].age", i), is(userDto.age())));
         }
     }
 
