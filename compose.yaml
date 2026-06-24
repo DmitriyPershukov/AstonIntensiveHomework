@@ -56,6 +56,22 @@ services:
       timeout: 20s
       retries: 5
 
+  config-server:
+    build:
+      context: config-server
+      args:
+        PORT: ${CONFIG_SERVER_PORT}
+    environment:
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONFIG_URL=${CONFIG_URL}
+    ports:
+      - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://config-server:${CONFIG_SERVER_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+
   postgres:
     image: postgres:18
     environment:

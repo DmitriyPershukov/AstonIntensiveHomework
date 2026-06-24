@@ -1,3 +1,12 @@
 spring:
   application:
     name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_URL}
+          default-label: main
+          clone-on-start: true
+server:
+  port: ${CONFIG_SERVER_PORT}
