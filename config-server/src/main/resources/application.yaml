@@ -12,5 +12,11 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka/
+encrypt:
+  key-store:
+    location: classpath:config_server.jks
+    password: ${CONFIG_ENCRYPTION_PASSWORD}
+    alias: ${CONFIG_ENCRYPTION_ALIAS}
+    secret: ${CONFIG_ENCRYPTION_SECRET}
 server:
   port: ${CONFIG_SERVER_PORT}
