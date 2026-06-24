@@ -8,10 +8,6 @@ spring:
           uri: ${CONFIG_URL}
           default-label: main
           clone-on-start: true
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka/
 encrypt:
   key-store:
     location: classpath:config_server.jks

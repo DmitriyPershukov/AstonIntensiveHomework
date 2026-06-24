@@ -69,7 +69,6 @@ services:
     environment:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
       - CONFIG_URL=${CONFIG_URL}
-      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
       - CONFIG_ENCRYPTION_PASSWORD=${CONFIG_ENCRYPTION_PASSWORD}
       - CONFIG_ENCRYPTION_ALIAS=${CONFIG_ENCRYPTION_ALIAS}
       - CONFIG_ENCRYPTION_SECRET=${CONFIG_ENCRYPTION_SECRET}
@@ -80,9 +79,6 @@ services:
       interval: 10s
       timeout: 20s
       retries: 5
-    depends_on:
-      eureka-server:
-        condition: service_healthy
 
   postgres:
     image: postgres:18
