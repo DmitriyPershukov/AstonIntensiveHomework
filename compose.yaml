@@ -64,6 +64,22 @@ services:
       timeout: 20s
       retries: 5
 
+  api-gateway:
+    build:
+      context: api-gateway
+      args:
+        PORT: ${API_GATEWAY_PORT}
+    environment:
+      - API_GATEWAY_PORT=${API_GATEWAY_PORT}
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+    ports:
+      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
   postgres:
     image: postgres:18
     environment:
