@@ -8,6 +8,11 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://user-service:${USER_SERVICE_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -23,7 +28,11 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
     ports:
       - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
-    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://notification-service:${NOTIFICATION_SERVICE_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -78,6 +87,10 @@ services:
       - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
     depends_on:
       eureka-server:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      notification-service:
         condition: service_healthy
 
   postgres:
