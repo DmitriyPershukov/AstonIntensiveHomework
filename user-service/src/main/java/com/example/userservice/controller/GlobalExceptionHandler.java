@@ -1,5 +1,6 @@
 package com.example.userservice.controller;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLTransientConnectionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,5 +42,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(messageBuilder);
+    }
+
+    @ExceptionHandler(CallNotPermittedException.class)
+    public ResponseEntity handleException(CallNotPermittedException ex){
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Service unavailable at the moment. Please try again later.");
+    }
+
+    @ExceptionHandler(SQLTransientConnectionException.class)
+    public ResponseEntity handleException(SQLTransientConnectionException ex){
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Data storage is not accessible at the moment.");
     }
 }

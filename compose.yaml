@@ -1,31 +1,97 @@
 services:
   user-service:
-    build: user-service
+    build:
+      context: user-service
+      args:
+        PORT: ${USER_SERVICE_PORT}
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PW=${POSTGRES_PW}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
-      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
-      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://user-service:${USER_SERVICE_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
 
   notification-service:
-    build: notification-service
+    build:
+      context: notification-service
+      args:
+        PORT: ${NOTIFICATION_SERVICE_PORT}
     environment:
-      - KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USERNAME=${EMAIL_USERNAME}
-      - EMAIL_PW=${EMAIL_PW}
-      - EMAIL_DEBUG=${EMAIL_DEBUG}
-      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
-      - KAFKA_TOPIC=${KAFKA_TOPIC}
-      - KAFKA_GROUP_ID=${KAFKA_GROUP_ID}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
     ports:
       - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
-    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://notification-service:${NOTIFICATION_SERVICE_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    
+  eureka-server:
+    build:
+      context: eureka-server
+      args:
+        PORT: ${EUREKA_SERVER_PORT}
+    environment:
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://eureka-server:${EUREKA_SERVER_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+
+  config-server:
+    build:
+      context: config-server
+      args:
+        PORT: ${CONFIG_SERVER_PORT}
+    environment:
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONFIG_URL=${CONFIG_URL}
+      - CONFIG_ENCRYPTION_PASSWORD=${CONFIG_ENCRYPTION_PASSWORD}
+      - CONFIG_ENCRYPTION_ALIAS=${CONFIG_ENCRYPTION_ALIAS}
+      - CONFIG_ENCRYPTION_SECRET=${CONFIG_ENCRYPTION_SECRET}
+    ports:
+      - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://config-server:${CONFIG_SERVER_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+
+  api-gateway:
+    build:
+      context: api-gateway
+      args:
+        PORT: ${API_GATEWAY_PORT}
+    environment:
+      - API_GATEWAY_PORT=${API_GATEWAY_PORT}
+      - EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+    ports:
+      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      notification-service:
+        condition: service_healthy
 
   postgres:
     image: postgres:18

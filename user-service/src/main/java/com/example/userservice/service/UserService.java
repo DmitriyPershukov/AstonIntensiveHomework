@@ -4,6 +4,7 @@ import com.example.userservice.message.MessageProducer;
 import com.example.userservice.model.UserDto;
 import com.example.userservice.model.UserMappingUtils;
 import com.example.userservice.repository.UserRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.persistence.EntityNotFoundException;
 import com.example.userservice.model.User;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class UserService {
         this.messageProducer = messageProducer;
     }
 
+    @CircuitBreaker(name = "userService")
     public List<UserDto> getAllUsers(){
         List<User> users = StreamSupport
                 .stream(userRepository.findAll().spliterator(), false)
@@ -34,6 +36,7 @@ public class UserService {
         return UserMappingUtils.mapToListUserDto(new ArrayList<>(users));
     }
 
+    @CircuitBreaker(name = "userService")
     public UserDto getUserById(Long id){
         return mapToUserDto(
                 userRepository.findById(id)
@@ -42,11 +45,13 @@ public class UserService {
                                         String.format(ENTITY_NOT_FOUND_MESSAGE_TEMPLATE, id))));
     }
 
+    @CircuitBreaker(name = "userService")
     public void createUser(UserDto userDto){
         userRepository.save(mapToUserEntity(userDto));
         messageProducer.send(String.format("created %s", userDto.email()));
     }
 
+    @CircuitBreaker(name = "userService")
     public void updateUser(Long id, UserDto userDto){
         User updatedUser = mapToUserEntity(userDto);
         User user = userRepository.findById(id)
@@ -58,6 +63,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @CircuitBreaker(name = "userService")
     public void deleteUser(Long id){
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){
@@ -67,6 +73,7 @@ public class UserService {
         messageProducer.send(String.format("deleted %s", user.get().getEmail()));
     }
 
+    @CircuitBreaker(name = "userService")
     public boolean exists(Long id){
         return userRepository.existsById(id);
     }

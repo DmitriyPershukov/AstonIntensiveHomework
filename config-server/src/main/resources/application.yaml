@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_URL}
+          default-label: main
+          clone-on-start: true
+encrypt:
+  key-store:
+    location: classpath:config_server.jks
+    password: ${CONFIG_ENCRYPTION_PASSWORD}
+    alias: ${CONFIG_ENCRYPTION_ALIAS}
+    secret: ${CONFIG_ENCRYPTION_SECRET}
+server:
+  port: ${CONFIG_SERVER_PORT}
